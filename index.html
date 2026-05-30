@@ -1,0 +1,3614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ShopBridge × UCP Demo — Universal Commerce Protocol Portfolio</title>
+  <meta name="description" content="A complete, production-ready reference implementation demonstrating absolute mastery of the Universal Commerce Protocol (UCP) version 2026-04-08 specification.">
+  
+  <!-- Modern Premium Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome for Premium Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    /* CSS Variables & Tokens - Color Palette (Indigo, Violet, Sleek Dark theme) */
+    :root {
+      --bg-base: #0b0c10;
+      --bg-surface: rgba(22, 24, 35, 0.6);
+      --bg-surface-solid: #161823;
+      --bg-sidebar: #0f1016;
+      --border-color: rgba(255, 255, 255, 0.08);
+      --border-glow: rgba(139, 92, 246, 0.2);
+      
+      --color-primary: #8b5cf6; /* Violet */
+      --color-primary-glow: rgba(139, 92, 246, 0.4);
+      --color-secondary: #6366f1; /* Indigo */
+      --color-text: #e2e8f0;
+      --color-text-muted: #94a3b8;
+      
+      --color-success: #10b981;
+      --color-success-bg: rgba(16, 185, 129, 0.1);
+      --color-warning: #f59e0b;
+      --color-warning-bg: rgba(245, 158, 11, 0.1);
+      --color-error: #ef4444;
+      --color-error-bg: rgba(239, 68, 68, 0.1);
+      --color-info: #3b82f6;
+      --color-info-bg: rgba(59, 130, 246, 0.1);
+
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-heading: 'Outfit', sans-serif;
+      --font-mono: 'Fira Code', monospace;
+      
+      --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --border-radius: 12px;
+      --shadow-premium: 0 10px 30px -10px rgba(0, 0, 0, 0.7);
+    }
+
+    /* Reset & Base Styles */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-base);
+      color: var(--color-text);
+      font-family: var(--font-sans);
+      line-height: 1.6;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(at 10% 10%, rgba(99, 102, 241, 0.08) 0px, transparent 50%),
+        radial-gradient(at 90% 90%, rgba(139, 92, 246, 0.08) 0px, transparent 50%);
+      background-attachment: fixed;
+    }
+
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.2);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(139, 92, 246, 0.3);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(139, 92, 246, 0.6);
+    }
+
+    /* Typography & Hierarchy */
+    h1, h2, h3, h4 {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    /* Layout Wrapper */
+    .dashboard-container {
+      display: flex;
+      min-height: 100vh;
+      width: 100vw;
+    }
+
+    /* Dark Sidebar */
+    .sidebar {
+      width: 280px;
+      background-color: var(--bg-sidebar);
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 100;
+      padding: 24px 16px;
+    }
+
+    .brand-section {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 32px;
+      padding: 0 8px;
+    }
+
+    .brand-logo {
+      background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 15px var(--color-primary-glow);
+    }
+
+    .brand-logo i {
+      font-size: 20px;
+      color: #fff;
+    }
+
+    .brand-name-container {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand-name {
+      font-size: 20px;
+      color: #fff;
+      font-weight: 800;
+      line-height: 1.1;
+    }
+
+    .brand-badge {
+      font-size: 10px;
+      color: var(--color-primary);
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      margin-top: 2px;
+    }
+
+    /* Sidebar Navigation Links */
+    .nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex-grow: 1;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .nav-item a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      color: var(--color-text-muted);
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      transition: var(--transition-smooth);
+      border: 1px solid transparent;
+    }
+
+    .nav-item a:hover {
+      color: #fff;
+      background-color: rgba(255, 255, 255, 0.03);
+    }
+
+    .nav-item.active a {
+      color: #fff;
+      background: linear-gradient(90deg, rgba(139, 92, 246, 0.15) 0%, rgba(99, 102, 241, 0.05) 100%);
+      border-color: rgba(139, 92, 246, 0.25);
+      box-shadow: inset 0 0 10px rgba(139, 92, 246, 0.05);
+    }
+
+    .nav-item.active a i {
+      color: var(--color-primary);
+    }
+
+    /* Main Content Area */
+    .main-content {
+      margin-left: 280px;
+      flex-grow: 1;
+      padding: 40px;
+      padding-bottom: 260px; /* Leave room for unified scrolling terminal */
+      max-width: 1600px;
+      width: calc(100% - 280px);
+    }
+
+    /* Top Portfolio Banner */
+    .portfolio-banner {
+      background: linear-gradient(135deg, rgba(30, 27, 75, 0.4) 0%, rgba(15, 23, 42, 0.6) 100%);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      padding: 28px;
+      margin-bottom: 35px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-premium);
+    }
+
+    .portfolio-banner::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: linear-gradient(to bottom, var(--color-primary), var(--color-secondary));
+    }
+
+    .portfolio-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(139, 92, 246, 0.15);
+      color: var(--color-primary);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      padding: 4px 12px;
+      border-radius: 50px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .portfolio-title {
+      font-size: 26px;
+      color: #fff;
+      margin-bottom: 12px;
+    }
+
+    .portfolio-desc {
+      font-size: 15px;
+      color: var(--color-text-muted);
+      margin-bottom: 24px;
+      max-width: 900px;
+    }
+
+    /* Checklist Grid */
+    .checklist-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 12px;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 20px;
+    }
+
+    .checklist-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--color-text);
+    }
+
+    .checklist-item i {
+      color: var(--color-success);
+    }
+
+    /* Main Section Cards */
+    .panel-section {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      padding: 30px;
+      margin-bottom: 35px;
+      box-shadow: var(--shadow-premium);
+      backdrop-filter: blur(12px);
+      display: none; /* Controlled by tab navigation */
+    }
+
+    .panel-section.active {
+      display: block;
+      animation: fadeIn 0.4s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 18px;
+      margin-bottom: 24px;
+    }
+
+    .section-title {
+      font-size: 22px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title i {
+      color: var(--color-primary);
+    }
+
+    .section-meta {
+      font-size: 12px;
+      color: var(--color-text-muted);
+      background-color: rgba(255, 255, 255, 0.04);
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      border: 1px solid var(--border-color);
+    }
+
+    .section-intro {
+      font-size: 14px;
+      color: var(--color-text-muted);
+      margin-bottom: 24px;
+      padding: 12px 16px;
+      background: rgba(255, 255, 255, 0.02);
+      border-left: 3px solid var(--color-secondary);
+      border-radius: 0 6px 6px 0;
+    }
+
+    /* Two Column Code & Control Grid */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 1024px) {
+      .feature-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .control-pane {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .code-panes {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .code-container {
+      background: #07080a;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      overflow: hidden;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.8);
+      position: relative;
+    }
+
+    .code-header {
+      background: rgba(255, 255, 255, 0.03);
+      padding: 8px 16px;
+      font-size: 11px;
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--color-text-muted);
+    }
+
+    .code-header span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .code-body {
+      padding: 16px;
+      overflow-x: auto;
+      max-height: 400px;
+      white-space: pre;
+    }
+
+    /* Syntax Highlighting */
+    .json-key { color: #f43f5e; }
+    .json-string { color: #34d399; }
+    .json-number { color: #fb923c; }
+    .json-boolean { color: #c084fc; }
+    .json-null { color: #94a3b8; }
+
+    /* Buttons & Inputs */
+    .btn {
+      background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-weight: 600;
+      font-size: 14px;
+      font-family: var(--font-sans);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: var(--transition-smooth);
+      box-shadow: 0 4px 12px var(--color-primary-glow);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(139, 92, 246, 0.5);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      color: #fff;
+      box-shadow: none;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.2);
+      box-shadow: none;
+      transform: none;
+    }
+
+    .btn-danger {
+      background: linear-gradient(135deg, #ef4444, #b91c1c);
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    }
+
+    .btn-danger:hover {
+      box-shadow: 0 6px 16px rgba(239, 68, 68, 0.5);
+    }
+
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 12px;
+      border-radius: 6px;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .input-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .input-field {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: #fff;
+      font-family: var(--font-sans);
+      font-size: 14px;
+      transition: var(--transition-smooth);
+    }
+
+    .input-field:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 10px var(--color-primary-glow);
+    }
+
+    /* Explanation Boxes */
+    .explanation-box {
+      background: rgba(59, 130, 246, 0.04);
+      border: 1px solid rgba(59, 130, 246, 0.15);
+      border-radius: 8px;
+      padding: 16px;
+      font-size: 13px;
+    }
+
+    .explanation-box h4 {
+      color: #fff;
+      margin-bottom: 8px;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .explanation-box h4 i {
+      color: var(--color-info);
+    }
+
+    .explanation-box ul {
+      margin-left: 18px;
+      margin-top: 6px;
+    }
+
+    /* Alert / Notice */
+    .ucp-alert {
+      padding: 14px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      display: flex;
+      gap: 12px;
+      border: 1px solid transparent;
+      margin-bottom: 15px;
+    }
+
+    .ucp-alert i {
+      font-size: 16px;
+      margin-top: 2px;
+    }
+
+    .ucp-alert-info {
+      background-color: var(--color-info-bg);
+      border-color: rgba(59, 130, 246, 0.2);
+      color: #93c5fd;
+    }
+
+    .ucp-alert-warning {
+      background-color: var(--color-warning-bg);
+      border-color: rgba(245, 158, 11, 0.2);
+      color: #fde047;
+    }
+
+    .ucp-alert-danger {
+      background-color: var(--color-error-bg);
+      border-color: rgba(239, 68, 68, 0.2);
+      color: #fca5a5;
+    }
+
+    /* Sidebar E2E Section */
+    .sidebar-footer {
+      border-top: 1px solid var(--border-color);
+      padding-top: 20px;
+      margin-top: auto;
+    }
+
+    .e2e-card {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(99, 102, 241, 0.05));
+      border: 1px solid rgba(139, 92, 246, 0.25);
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .e2e-card p {
+      font-size: 11px;
+      color: var(--color-text-muted);
+      margin-bottom: 12px;
+    }
+
+    /* Scrolling Unified Terminal */
+    .unified-terminal {
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      left: 280px;
+      height: 240px;
+      background: #050608;
+      border-top: 1px solid var(--border-color);
+      z-index: 99;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.8);
+      transition: height 0.3s ease;
+    }
+
+    .unified-terminal.minimized {
+      height: 40px;
+    }
+
+    .terminal-header {
+      background: #0b0c10;
+      padding: 8px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+      cursor: pointer;
+    }
+
+    .terminal-title {
+      font-family: var(--font-heading);
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .terminal-title i {
+      color: var(--color-primary);
+    }
+
+    .terminal-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .terminal-btn {
+      background: transparent;
+      border: none;
+      color: var(--color-text-muted);
+      cursor: pointer;
+      font-size: 12px;
+      transition: var(--transition-smooth);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .terminal-btn:hover {
+      color: #fff;
+    }
+
+    .terminal-console {
+      flex-grow: 1;
+      overflow-y: auto;
+      padding: 16px 20px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      background: #040507;
+    }
+
+    .console-log-line {
+      display: flex;
+      gap: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+      padding-bottom: 4px;
+    }
+
+    .log-timestamp {
+      color: #4b5563;
+      min-width: 80px;
+    }
+
+    .log-direction {
+      font-weight: 700;
+    }
+
+    .direction-in { color: var(--color-success); }
+    .direction-out { color: var(--color-info); }
+    .direction-system { color: var(--color-primary); }
+    .direction-error { color: var(--color-error); }
+
+    .log-text {
+      color: #d1d5db;
+      flex-grow: 1;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .log-text.payload-preview {
+      background: rgba(255, 255, 255, 0.01);
+      padding: 6px 10px;
+      border-radius: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      margin-top: 4px;
+      color: #a7f3d0;
+    }
+
+    /* SECTION SPECIFIC STYLING */
+
+    /* Section 2: Negotiation Pruner Visualization */
+    .pruning-canvas {
+      background: rgba(0,0,0,0.4);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .cap-node {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      background: rgba(255, 255, 255, 0.02);
+      font-size: 13px;
+    }
+
+    .cap-node.active {
+      border-color: rgba(16, 185, 129, 0.4);
+      background: rgba(16, 185, 129, 0.03);
+    }
+
+    .cap-node.pruned {
+      border-color: rgba(239, 68, 68, 0.4);
+      background: rgba(239, 68, 68, 0.03);
+      text-decoration: line-through;
+      color: var(--color-text-muted);
+    }
+
+    /* Section 3: Catalog Grid */
+    .catalog-search-controls {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .catalog-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+    }
+
+    .product-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: var(--transition-smooth);
+    }
+
+    .product-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--color-primary);
+      box-shadow: 0 8px 24px rgba(139, 92, 246, 0.15);
+    }
+
+    .product-img {
+      height: 140px;
+      background-size: cover;
+      background-position: center;
+      background-color: rgba(0, 0, 0, 0.4);
+      position: relative;
+    }
+
+    .product-cat-tag {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      color: var(--color-primary);
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .product-info {
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+
+    .product-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .product-price {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--color-primary);
+      margin-bottom: 12px;
+    }
+
+    /* Section 4 & 5: Carts & Checkout */
+    .cart-summary-box {
+      border: 1px solid var(--border-color);
+      background: rgba(0,0,0,0.2);
+      border-radius: 8px;
+      padding: 18px;
+    }
+
+    .cart-item-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+    }
+
+    .cart-item-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .cart-item-name {
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .cart-item-qty {
+      font-size: 11px;
+      color: var(--color-text-muted);
+    }
+
+    .cart-total-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 8px;
+      font-size: 13px;
+    }
+
+    .cart-total-grand {
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      border-top: 1px dashed var(--border-color);
+      padding-top: 8px;
+      margin-top: 12px;
+    }
+
+    /* Checkout Stepper UI */
+    .checkout-stepper {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border-color);
+      padding: 10px 20px;
+      border-radius: 8px;
+    }
+
+    .step-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--color-text-muted);
+      font-weight: 600;
+    }
+
+    .step-indicator.active {
+      color: var(--color-primary);
+    }
+
+    .step-indicator.complete {
+      color: var(--color-success);
+    }
+
+    .step-num {
+      width: 20px;
+      height: 20px;
+      border-radius: 50px;
+      background: rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      color: #fff;
+    }
+
+    .step-indicator.active .step-num {
+      background: var(--color-primary);
+    }
+
+    .step-indicator.complete .step-num {
+      background: var(--color-success);
+    }
+
+    .payment-handler-card {
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 14px;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(255,255,255,0.01);
+    }
+
+    .payment-handler-card:hover {
+      border-color: rgba(139, 92, 246, 0.4);
+      background: rgba(139, 92, 246, 0.02);
+    }
+
+    .payment-handler-card.selected {
+      border-color: var(--color-primary);
+      background: rgba(139, 92, 246, 0.06);
+    }
+
+    /* Section 7: Vertical Order Timeline */
+    .timeline {
+      position: relative;
+      margin-left: 20px;
+      padding-left: 20px;
+      border-left: 2px solid var(--border-color);
+    }
+
+    .timeline-event {
+      position: relative;
+      margin-bottom: 24px;
+    }
+
+    .timeline-dot {
+      position: absolute;
+      left: -27px;
+      top: 4px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50px;
+      background-color: var(--border-color);
+      border: 2px solid var(--bg-surface-solid);
+    }
+
+    .timeline-event.active .timeline-dot {
+      background-color: var(--color-primary);
+      box-shadow: 0 0 8px var(--color-primary);
+    }
+
+    .timeline-event.delivered .timeline-dot {
+      background-color: var(--color-success);
+      box-shadow: 0 0 8px var(--color-success);
+    }
+
+    .timeline-event.refunded .timeline-dot {
+      background-color: var(--color-error);
+    }
+
+    .timeline-content {
+      background: rgba(255, 255, 255, 0.01);
+      border: 1px solid var(--border-color);
+      padding: 12px 16px;
+      border-radius: 6px;
+    }
+
+    .timeline-time {
+      font-size: 10px;
+      color: var(--color-text-muted);
+      font-family: var(--font-mono);
+    }
+
+    .timeline-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .timeline-desc {
+      font-size: 12px;
+      color: var(--color-text-muted);
+      margin-top: 4px;
+    }
+
+    /* Interactive 3DS Simulator Popover Modal */
+    .backdrop-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.8);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(8px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .backdrop-modal.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-card {
+      background: #0f111a;
+      border: 1px solid var(--color-warning);
+      width: 500px;
+      max-width: 90%;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+      animation: scaleUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes scaleUp {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-header {
+      background: rgba(245, 158, 11, 0.1);
+      padding: 16px 20px;
+      border-bottom: 1px solid rgba(245, 158, 11, 0.2);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-body {
+      padding: 24px;
+    }
+
+    /* Transports Panel Tabs */
+    .tab-bar {
+      display: flex;
+      gap: 4px;
+      background: rgba(0,0,0,0.3);
+      padding: 4px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+      border: 1px solid var(--border-color);
+    }
+
+    .tab-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--color-text-muted);
+      padding: 8px;
+      font-size: 11px;
+      font-weight: 600;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+      text-transform: uppercase;
+      font-family: var(--font-heading);
+    }
+
+    .tab-btn.active {
+      background: var(--color-primary);
+      color: #fff;
+    }
+
+    /* Schema Grid details */
+    .pci-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+    }
+
+    .pci-card {
+      border: 1px dashed var(--border-color);
+      border-radius: 8px;
+      padding: 16px;
+      background: rgba(255,255,255,0.01);
+      text-align: center;
+    }
+
+    .pci-card.highlight {
+      border-style: solid;
+      border-color: var(--color-success);
+      background: rgba(16, 185, 129, 0.03);
+    }
+
+    .error-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 10px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .sidebar {
+        display: none; /* Mobile would need hamburger toggle */
+      }
+      .main-content {
+        margin-left: 0;
+        width: 100%;
+        padding: 16px;
+      }
+      .unified-terminal {
+        left: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="dashboard-container">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="brand-section">
+        <div class="brand-logo">
+          <i class="fa-solid fa-bridge-water"></i>
+        </div>
+        <div class="brand-name-container">
+          <span class="brand-name">ShopBridge</span>
+          <span class="brand-badge">UCP Engine v2026</span>
+        </div>
+      </div>
+
+      <ul class="nav-list">
+        <li class="nav-item active" onclick="switchTab(this, 'intro')"><a href="#intro"><i class="fa-solid fa-house"></i> Portfolio Hub</a></li>
+        <li class="nav-item" onclick="switchTab(this, 'profiles')"><a href="#profiles"><i class="fa-solid fa-id-card"></i> UCP Profiles</a></li>
+        <li class="nav-item" onclick="switchTab(this, 'negotiation')"><a href="#negotiation"><i class="fa-solid fa-handshake"></i> Negotiation</a></li>
+        <li class="nav-item" onclick="switchTab(this, 'catalog')"><a href="#catalog"><i class="fa-solid fa-book-open"></i> Catalog discovery</a></li>
+        <li class="nav-item" onclick="switchTab(this, 'cart')"><a href="#cart"><i class="fa-solid fa-shopping-cart"></i> Cart Manager</a></li>
+        <li class="nav-item" onclick="switchTab(this, 'checkout')"><a href="#checkout"><i class="fa-solid fa-credit-card"></i> Checkout Stepper</a></li>
+        <li class="nav-item" onclick="switchTab(this, 'identity')"><a href="#identity"><i class="fa-solid fa-user-lock"></i> Identity Linking</a></li>
+        <li class="nav-item" onclick="switchTab(this, 'orders')"><a href="#orders"><i class="fa-solid fa-box-open"></i> Order Lifecycles</a></li>
+        <li class="nav-item" onclick="switchTab(this, 'payments')"><a href="#payments"><i class="fa-solid fa-coins"></i> Payment Handlers</a></li>
+        <li class="nav-item" onclick="switchTab(this, 'transports')"><a href="#transports"><i class="fa-solid fa-network-wired"></i> Transports</a></li>
+        <li class="nav-item" onclick="switchTab(this, 'errors')"><a href="#errors"><i class="fa-solid fa-triangle-exclamation"></i> Error Simulator</a></li>
+        <li class="nav-item" onclick="switchTab(this, 'security')"><a href="#security"><i class="fa-solid fa-shield-halved"></i> Signals &amp; Security</a></li>
+        <li class="nav-item" onclick="switchTab(this, 'versioning')"><a href="#versioning"><i class="fa-solid fa-code-branch"></i> Versioning</a></li>
+      </ul>
+
+      <!-- Sidebar Quick E2E Trigger -->
+      <div class="sidebar-footer">
+        <div class="e2e-card">
+          <p>Execute complete, automated end-to-end purchasing run.</p>
+          <button class="btn btn-sm" id="btn-run-all" onclick="runCompleteDemoFlow()">
+            <i class="fa-solid fa-bolt"></i> Run All Demo
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Workspace -->
+    <main class="main-content">
+      
+      <!-- Portfolio Context Banner -->
+      <section class="portfolio-banner">
+        <div class="portfolio-badge">
+          <i class="fa-solid fa-award"></i> UCP integration portfolio
+        </div>
+        <h1 class="portfolio-title">ShopBridge × UCP Demo Platform</h1>
+        <p class="portfolio-desc">
+          This is a reference implementation built to demonstrate full Universal Commerce Protocol (UCP) expertise. It covers every major capability defined in the UCP 2026-04-08 specification — from catalog discovery through checkout, order management, and payment handler integration. This is the kind of implementation I build for clients integrating their platforms or merchant storefronts into the emerging agentic commerce ecosystem.
+        </p>
+        
+        <!-- Interactive Checklist of Completed Capabilities -->
+        <div class="checklist-grid">
+          <div class="checklist-item"><i class="fa-solid fa-circle-check"></i> Business &amp; Platform Profile (/.well-known/ucp)</div>
+          <div class="checklist-item"><i class="fa-solid fa-circle-check"></i> Capability Negotiation Engine</div>
+          <div class="checklist-item"><i class="fa-solid fa-circle-check"></i> Catalog Search &amp; Lookup API</div>
+          <div class="checklist-item"><i class="fa-solid fa-circle-check"></i> Carts with Discount Extensions</div>
+          <div class="checklist-item"><i class="fa-solid fa-circle-check"></i> 3-State Checkout Lifecycle</div>
+          <div class="checklist-item"><i class="fa-solid fa-circle-check"></i> Fulfillment Extensions</div>
+          <div class="checklist-item"><i class="fa-solid fa-circle-check"></i> Discount Extensions (Multi-Parent)</div>
+          <div class="checklist-item"><i class="fa-solid fa-circle-check"></i> Identity Linking (OAuth 2.0 Flow)</div>
+          <div class="checklist-item"><i class="fa-solid fa-circle-check"></i> Order Lifecycles &amp; Refund Events</div>
+          <div class="checklist-item"><i class="fa-solid fa-circle-check"></i> Payment Handlers: GPay, Shop Pay, AP2</div>
+          <div class="checklist-item"><i class="fa-solid fa-circle-check"></i> REST, MCP, A2A &amp; Embedded Transports</div>
+          <div class="checklist-item"><i class="fa-solid fa-circle-check"></i> Error Injector &amp; continue_url Fallbacks</div>
+          <div class="checklist-item"><i class="fa-solid fa-circle-check"></i> Signals &amp; Security Attestations</div>
+          <div class="checklist-item"><i class="fa-solid fa-circle-check"></i> Version Slider &amp; Backward Compatibility</div>
+          <div class="checklist-item"><i class="fa-solid fa-circle-check"></i> PCI-DSS Scope Partitioning Model</div>
+          <div class="checklist-item"><i class="fa-solid fa-circle-check"></i> RFC 9421 Message Signatures Concept</div>
+        </div>
+      </section>
+
+      <!-- SECTION 0: PORTFOLIO HUB -->
+      <section id="sec-intro" class="panel-section active">
+        <div class="section-header">
+          <h2 class="section-title"><i class="fa-solid fa-circle-info"></i> ShopBridge &amp; UCP Framework Hub</h2>
+          <span class="section-meta">overview.md</span>
+        </div>
+        <div class="explanation-box" style="margin-bottom: 24px;">
+          <h4><i class="fa-solid fa-bolt"></i> Welcome to ShopBridge</h4>
+          <p>
+            ShopBridge demonstrates how an AI shopping agent can browse, secure mandates, and finalize transactions on behalf of users securely and seamlessly without the friction of traditional web wrappers. 
+          </p>
+          <p style="margin-top:10px;">
+            Navigate using the **dark sidebar** on the left to inspect detailed specifications, execute API call simulations, test security handshakes, and debug sandbox features.
+          </p>
+        </div>
+        <div class="feature-grid">
+          <div class="control-pane">
+            <h3 style="color:#fff; margin-bottom:12px;">Architecture Overview</h3>
+            <p style="font-size:14px; color:var(--color-text-muted);">
+              UCP serves as an abstraction layer separating the AI agent platform from merchant catalog and ordering systems. Transactions flow across structured transport profiles, validating capabilities through intersection rules, securing authorization cryptographically, and publishing orders cleanly.
+            </p>
+            <div style="text-align: center; padding: 20px; background: rgba(255,255,255,0.01); border: 1px dashed var(--border-color); border-radius: 8px;">
+              <i class="fa-solid fa-network-wired" style="font-size:40px; color:var(--color-primary); margin-bottom:12px;"></i>
+              <p style="font-size:12px; font-weight:700;">AGENT <i class="fa-solid fa-right-left"></i> UCP BRIDGE <i class="fa-solid fa-right-left"></i> MERCHANT APIS</p>
+            </div>
+          </div>
+          <div class="code-panes">
+            <div class="explanation-box" style="background: rgba(139, 92, 246, 0.05);">
+              <h4 style="color:var(--color-primary);"><i class="fa-solid fa-circle-play"></i> Get Started Instantly</h4>
+              <p>For an accelerated walkthrough of every single section working in concert:</p>
+              <button class="btn btn-secondary" style="margin-top:12px;" onclick="runCompleteDemoFlow()">
+                <i class="fa-solid fa-play"></i> Run All Core E2E Features
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 1: BUSINESS & PLATFORM PROFILES -->
+      <section id="sec-profiles" class="panel-section">
+        <div class="section-header">
+          <h2 class="section-title"><i class="fa-solid fa-id-card"></i> UCP Profiles Discovery</h2>
+          <span class="section-meta">/.well-known/ucp</span>
+        </div>
+        <p class="section-intro">
+          UCP onboarding begins with standard profile JSON objects residing at well-known endpoints. This establishes capabilities, supported payment gateways, keys, and endpoint locations.
+        </p>
+        <div class="feature-grid">
+          <div class="control-pane">
+            <div class="explanation-box">
+              <h4><i class="fa-solid fa-store"></i> NovaMart (Merchant) Profile</h4>
+              <p>Provides endpoint paths for REST, MCP (JSON-RPC tools), App-to-App (A2A), and Embedded Web Checkout protocols, alongside payment specs.</p>
+              <button class="btn btn-sm btn-secondary" style="margin-top: 10px;" onclick="showProfile('business')">Load NovaMart JSON</button>
+            </div>
+            <div class="explanation-box">
+              <h4><i class="fa-solid fa-robot"></i> ShopBridge Agent Profile</h4>
+              <p>Advertises capabilities supporting programmatic checkout, fulfillment resolution, cart state syncing, and OAuth credential scopes.</p>
+              <button class="btn btn-sm btn-secondary" style="margin-top: 10px;" onclick="showProfile('platform')">Load ShopBridge JSON</button>
+            </div>
+          </div>
+          <div class="code-panes">
+            <div class="code-container">
+              <div class="code-header">
+                <span id="profile-pane-title"><i class="fa-solid fa-file-code"></i> profile.json</span>
+                <button class="terminal-btn" onclick="copyCode('profile-code-body')"><i class="fa-regular fa-copy"></i> Copy</button>
+              </div>
+              <div class="code-body" id="profile-code-body">Select a profile to load its full discovery JSON schema...</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 2: CAPABILITY NEGOTIATION -->
+      <section id="sec-negotiation" class="panel-section">
+        <div class="section-header">
+          <h2 class="section-title"><i class="fa-solid fa-handshake"></i> Capability Negotiation Engine</h2>
+          <span class="section-meta">negotiateCapabilities()</span>
+        </div>
+        <p class="section-intro">
+          This panel displays the execution of the UCP Intersection Algorithm. It resolves mutual capabilities, chooses mutual semantic versions, and prunes orphaned child capabilities.
+        </p>
+        <div class="feature-grid">
+          <div class="control-pane">
+            <div class="explanation-box" style="margin-bottom:12px;">
+              <h4>Intersection Logic Checklist</h4>
+              <ul>
+                <li>Compute baseline intersection of matching names.</li>
+                <li>Filter by mutual supported versions (highest mutual selected).</li>
+                <li>Prune child extensions missing required root parents.</li>
+              </ul>
+            </div>
+            <button class="btn" onclick="executeNegotiationDemo()">
+              <i class="fa-solid fa-calculator"></i> Run Intersection Logic
+            </button>
+            
+            <div class="pruning-canvas" id="pruning-nodes-view" style="display:none;">
+              <h4 style="color:#fff; font-size:13px;"><i class="fa-solid fa-sitemap"></i> Tree Pruning Visualizer</h4>
+              <!-- Populated by JS -->
+            </div>
+          </div>
+          <div class="code-panes">
+            <div class="code-container">
+              <div class="code-header">
+                <span><i class="fa-solid fa-square-poll-horizontal"></i> Negotiation Step Logs</span>
+                <button class="terminal-btn" onclick="copyCode('nego-logs-body')"><i class="fa-regular fa-copy"></i> Copy</button>
+              </div>
+              <div class="code-body" id="nego-logs-body">Click "Run Intersection Logic" to execute the algorithm...</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 3: CATALOG SEARCH & LOOKUP -->
+      <section id="sec-catalog" class="panel-section">
+        <div class="section-header">
+          <h2 class="section-title"><i class="fa-solid fa-book-open"></i> Catalog Capability</h2>
+          <span class="section-meta">/catalog/search</span>
+        </div>
+        <p class="section-intro">
+          The agent queries product indices programmatically. Test catalog filters or drill down to see UCP format properties in minor units (cents).
+        </p>
+        
+        <div class="catalog-search-controls">
+          <input type="text" class="input-field" id="cat-query" placeholder="Search products (e.g. Buds, Smart)...">
+          <select class="input-field" id="cat-filter-category">
+            <option value="">All Categories</option>
+            <option value="Electronics">Electronics</option>
+            <option value="Clothing">Clothing</option>
+            <option value="Home">Home</option>
+          </select>
+          <button class="btn" onclick="searchCatalog()">
+            <i class="fa-solid fa-magnifying-glass"></i> Search
+          </button>
+        </div>
+
+        <div class="feature-grid">
+          <div class="control-pane">
+            <div class="catalog-grid" id="catalog-products-container">
+              <!-- Cards dynamically inserted -->
+            </div>
+          </div>
+          
+          <div class="code-panes">
+            <div class="code-container">
+              <div class="code-header">
+                <span><i class="fa-solid fa-network-wired"></i> REST Endpoint Response</span>
+                <button class="terminal-btn" onclick="copyCode('cat-code-body')"><i class="fa-regular fa-copy"></i> Copy</button>
+              </div>
+              <div class="code-body" id="cat-code-body">Click search or hover on a product's details to view UCP Catalog response payload...</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 4: CART CAPABILITY -->
+      <section id="sec-cart" class="panel-section">
+        <div class="section-header">
+          <h2 class="section-title"><i class="fa-solid fa-shopping-cart"></i> Cart Capability</h2>
+          <span class="section-meta">/carts/:id</span>
+        </div>
+        <p class="section-intro">
+          UCP Carts represent stateful checkout prep containers. Try adding products, adjusting quantities, and testing discount coupons.
+        </p>
+        <div class="feature-grid">
+          <div class="control-pane">
+            <h3 style="color:#fff; margin-bottom:12px;">Active Cart</h3>
+            <div class="cart-summary-box" id="active-cart-list">
+              <!-- Cart List -->
+            </div>
+            
+            <!-- Coupon Code Entry -->
+            <div style="display:flex; gap:10px; margin-top:16px;">
+              <input type="text" class="input-field" id="promo-code" style="flex:1;" placeholder="Enter Promo (SAVE10, FREESHIP)...">
+              <button class="btn btn-secondary" onclick="applyPromo()">Apply Code</button>
+            </div>
+            
+            <button class="btn" style="margin-top:12px;" onclick="goToCheckoutSection()">
+              <i class="fa-solid fa-circle-arrow-right"></i> Advance to Checkout
+            </button>
+          </div>
+          
+          <div class="code-panes">
+            <div class="code-container">
+              <div class="code-header">
+                <span><i class="fa-solid fa-network-wired"></i> POST /carts Response</span>
+                <button class="terminal-btn" onclick="copyCode('cart-code-body')"><i class="fa-regular fa-copy"></i> Copy</button>
+              </div>
+              <div class="code-body" id="cart-code-body">Modify cart state to observe REST responses...</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 5: CHECKOUT LIFECYCLE -->
+      <section id="sec-checkout" class="panel-section">
+        <div class="section-header">
+          <h2 class="section-title"><i class="fa-solid fa-credit-card"></i> Checkout Lifecycle Stepper</h2>
+          <span class="section-meta">/checkout-sessions</span>
+        </div>
+        
+        <!-- Stepper Visualizer -->
+        <div class="checkout-stepper">
+          <div class="step-indicator active" id="step-ind-1">
+            <div class="step-num">1</div>
+            Cart Review
+          </div>
+          <div class="step-indicator" id="step-ind-2">
+            <div class="step-num">2</div>
+            Shipping Info
+          </div>
+          <div class="step-indicator" id="step-ind-3">
+            <div class="step-num">3</div>
+            Secure Payment
+          </div>
+          <div class="step-indicator" id="step-ind-4">
+            <div class="step-num">4</div>
+            Confirmation
+          </div>
+        </div>
+
+        <div class="feature-grid">
+          <!-- Form and Interaction Side -->
+          <div class="control-pane" id="checkout-dynamic-interaction">
+            <!-- Dynamically populated per state -->
+          </div>
+
+          <!-- JSON/Payload View Side -->
+          <div class="code-panes">
+            <div class="code-container">
+              <div class="code-header">
+                <span id="chk-endpoint-title"><i class="fa-solid fa-network-wired"></i> POST /checkout-sessions</span>
+                <button class="terminal-btn" onclick="copyCode('checkout-code-body')"><i class="fa-regular fa-copy"></i> Copy</button>
+              </div>
+              <div class="code-body" id="checkout-code-body">Begin checkout processing above...</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 6: IDENTITY LINKING -->
+      <section id="sec-identity" class="panel-section">
+        <div class="section-header">
+          <h2 class="section-title"><i class="fa-solid fa-user-lock"></i> Identity Linking</h2>
+          <span class="section-meta">/.well-known/oauth-authorization-server</span>
+        </div>
+        <p class="section-intro">
+          This implements `dev.ucp.common.identity_linking`. AI agents securely bind client context to merchant accounts using OAuth 2.0 authorization rules.
+        </p>
+        <div class="feature-grid">
+          <div class="control-pane">
+            <div class="explanation-box" style="margin-bottom:16px;">
+              <h4><i class="fa-solid fa-info-circle"></i> Discovery Details</h4>
+              <p>The authorization endpoints are advertised inside the /.well-known directory, establishing client secret formats and token grant mechanics.</p>
+              <button class="btn btn-sm btn-secondary" style="margin-top:10px;" onclick="loadOAuthDiscovery()">View Discovery Config</button>
+            </div>
+            
+            <div class="explanation-box">
+              <h4>Identity Connection State</h4>
+              <div style="display:flex; align-items:center; gap:12px; margin: 12px 0;">
+                <div id="oauth-connected-status" style="width:12px; height:12px; border-radius:50px; background-color:var(--color-error);"></div>
+                <span id="oauth-status-text" style="font-weight:700;">Disconnected</span>
+              </div>
+              <button class="btn" id="btn-oauth-action" onclick="triggerOAuthFlow()">Connect Agent Account</button>
+            </div>
+          </div>
+          
+          <div class="code-panes">
+            <div class="code-container">
+              <div class="code-header">
+                <span><i class="fa-solid fa-shield-halved"></i> OAuth Request/Response Log</span>
+                <button class="terminal-btn" onclick="copyCode('oauth-code-body')"><i class="fa-regular fa-copy"></i> Copy</button>
+              </div>
+              <div class="code-body" id="oauth-code-body">Click connect or view metadata to see standard payload records...</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 7: ORDER MANAGEMENT & TIMELINE -->
+      <section id="sec-orders" class="panel-section">
+        <div class="section-header">
+          <h2 class="section-title"><i class="fa-solid fa-box-open"></i> Order Lifecycles &amp; Webhooks</h2>
+          <span class="section-meta">/orders/:id</span>
+        </div>
+        <p class="section-intro">
+          Post-checkout webhooks broadcast order modifications. Simulate carrier operations and returns using the controls below.
+        </p>
+        <div class="feature-grid">
+          <div class="control-pane">
+            <h3 style="color:#fff; margin-bottom:12px;">Timeline Simulator</h3>
+            
+            <div class="timeline" id="order-timeline-container">
+              <!-- Event Timeline -->
+              <div class="timeline-event active">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                  <div class="timeline-time">Pending Confirmation</div>
+                  <div class="timeline-title">No Active Order</div>
+                  <div class="timeline-desc">Fulfill a checkout session to construct active tracking records.</div>
+                </div>
+              </div>
+            </div>
+
+            <div style="display:flex; gap:10px; margin-top:16px;" id="order-webhook-buttons" class="hidden">
+              <button class="btn btn-secondary btn-sm" onclick="triggerOrderWebhook('shipped')"><i class="fa-solid fa-truck"></i> Ship Order</button>
+              <button class="btn btn-secondary btn-sm" onclick="triggerOrderWebhook('delivered')"><i class="fa-solid fa-house-chimney-user"></i> Mark Delivered</button>
+              <button class="btn btn-danger btn-sm" onclick="triggerOrderWebhook('refunded')"><i class="fa-solid fa-rotate-left"></i> Process Return/Refund</button>
+            </div>
+          </div>
+
+          <div class="code-panes">
+            <div class="code-container">
+              <div class="code-header">
+                <span><i class="fa-solid fa-network-wired"></i> Webhook Event Payload</span>
+                <button class="terminal-btn" onclick="copyCode('order-code-body')"><i class="fa-regular fa-copy"></i> Copy</button>
+              </div>
+              <div class="code-body" id="order-code-body">Simulate order actions to monitor payload details...</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 8: PAYMENT HANDLER PLAYGROUND -->
+      <section id="sec-payments" class="panel-section">
+        <div class="section-header">
+          <h2 class="section-title"><i class="fa-solid fa-coins"></i> Payment Handler Playground</h2>
+          <span class="section-meta">payment.handlers</span>
+        </div>
+        <p class="section-intro">
+          UCP abstracts tokenization. Inspect mutual card configurations, mandate rules, and scope topologies.
+        </p>
+
+        <!-- Instrument Resolution Tool -->
+        <div class="explanation-box" style="margin-bottom: 24px;">
+          <h4><i class="fa-solid fa-scale-balanced"></i> Available Instrument Resolution (Intersection Algorithm)</h4>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; margin-top:10px;">
+            <div>
+              <p style="font-size:12px; font-weight:700; color:var(--color-primary);">Merchant Card Config</p>
+              <p style="font-size:11px; color:var(--color-text-muted);">["VISA", "MASTERCARD", "AMEX", "DISCOVER"]</p>
+            </div>
+            <div>
+              <p style="font-size:12px; font-weight:700; color:var(--color-secondary);">Agent Platform Config</p>
+              <p style="font-size:11px; color:var(--color-text-muted);">["VISA", "MASTERCARD", "JCB"]</p>
+            </div>
+          </div>
+          <button class="btn btn-sm btn-secondary" style="margin-top:12px;" onclick="resolveInstrumentsDemo()">
+            Resolve Active Instruments
+          </button>
+        </div>
+
+        <div class="feature-grid">
+          <div class="control-pane">
+            <h3 style="color:#fff; margin-bottom:12px;">3 Integration Scenarios</h3>
+            
+            <div class="explanation-box" style="margin-bottom:10px;">
+              <h4>A. Digital Wallet / Google Pay</h4>
+              <p style="font-size:12px;">Merchant config references direct gateway keys. The platform requests, executes, and yields encrypted payloads.</p>
+              <button class="btn btn-sm btn-secondary" style="margin-top:8px;" onclick="runPaymentScenario('gpay')">Verify Wallet Spec</button>
+            </div>
+            
+            <div class="explanation-box" style="margin-bottom:10px;">
+              <h4>B. Direct Tokenization (Visa/MC)</h4>
+              <p style="font-size:12px;">Demonstrates direct card entry and 3DS authorization challenges.</p>
+              <button class="btn btn-sm btn-secondary" style="margin-top:8px;" onclick="runPaymentScenario('direct')">Verify Card Spec</button>
+            </div>
+            
+            <div class="explanation-box">
+              <h4>C. Autonomous AP2 Mandate Flow</h4>
+              <p style="font-size:12px;">Secures signed user mandates authorizing scheduled agent pull payments without continuous interaction.</p>
+              <button class="btn btn-sm btn-secondary" style="margin-top:8px;" onclick="runPaymentScenario('ap2')">Verify AP2 Mandate</button>
+            </div>
+          </div>
+
+          <div class="code-panes">
+            <!-- PCI DSS Model Diagram -->
+            <div class="code-container" style="margin-bottom: 16px;">
+              <div class="code-header">
+                <span><i class="fa-solid fa-chart-pie"></i> PCI-DSS Scope Architecture Map</span>
+              </div>
+              <div style="padding: 16px;">
+                <div class="pci-grid">
+                  <div class="pci-card">
+                    <p style="font-weight:700; font-size:11px; color:var(--color-primary);">AI Platform</p>
+                    <p style="font-size:9px; color:var(--color-text-muted); margin-top:4px;">No RAW Credentials (Out of Scope)</p>
+                  </div>
+                  <div class="pci-card highlight">
+                    <p style="font-weight:700; font-size:11px; color:var(--color-success);">PSP Gateway</p>
+                    <p style="font-size:9px; color:var(--color-text-muted); margin-top:4px;">Vaults Cards (Direct Scope)</p>
+                  </div>
+                  <div class="pci-card">
+                    <p style="font-weight:700; font-size:11px; color:var(--color-secondary);">Merchant App</p>
+                    <p style="font-size:9px; color:var(--color-text-muted); margin-top:4px;">Consumes Secure Tokens Only</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="code-container">
+              <div class="code-header">
+                <span><i class="fa-solid fa-file-invoice-dollar"></i> Payload Viewer</span>
+                <button class="terminal-btn" onclick="copyCode('payment-code-body')"><i class="fa-regular fa-copy"></i> Copy</button>
+              </div>
+              <div class="code-body" id="payment-code-body">Click an evaluation button to render cryptographic configurations...</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 9: TRANSPORTS SIDE-BY-SIDE -->
+      <section id="sec-transports" class="panel-section">
+        <div class="section-header">
+          <h2 class="section-title"><i class="fa-solid fa-network-wired"></i> Multi-Transport Configurations</h2>
+          <span class="section-meta">dev.ucp.shopping.services</span>
+        </div>
+        <p class="section-intro">
+          UCP payloads remain constant across physical network layers. Inspect identical Checkout operations mapped to REST, MCP, A2A, and Embedded formats.
+        </p>
+
+        <div class="tab-bar">
+          <button class="tab-btn active" onclick="switchTransportTab(this, 'rest')">REST (HTTP)</button>
+          <button class="tab-btn" onclick="switchTransportTab(this, 'mcp')">MCP (JSON-RPC)</button>
+          <button class="tab-btn" onclick="switchTransportTab(this, 'a2a')">A2A (Agent Card)</button>
+          <button class="tab-btn" onclick="switchTransportTab(this, 'embedded')">Embedded (Iframe)</button>
+        </div>
+
+        <div class="code-container">
+          <div class="code-header">
+            <span id="transport-spec-header"><i class="fa-solid fa-code"></i> REST Transport Protocol</span>
+            <button class="terminal-btn" onclick="copyCode('transport-code-body')"><i class="fa-regular fa-copy"></i> Copy</button>
+          </div>
+          <div class="code-body" id="transport-code-body" style="max-height:500px;">Loading transport mappings...</div>
+        </div>
+      </section>
+
+      <!-- SECTION 10: ERROR SIMULATOR -->
+      <section id="sec-errors" class="panel-section">
+        <div class="section-header">
+          <h2 class="section-title"><i class="fa-solid fa-triangle-exclamation"></i> Error Simulator &amp; Fallbacks</h2>
+          <span class="section-meta">UCP standard errors</span>
+        </div>
+        <p class="section-intro">
+          UCP specifies precise error payloads to instruct automated agents on fallback procedures. Test error handling parameters here.
+        </p>
+
+        <div class="feature-grid">
+          <div class="control-pane">
+            <h3 style="color:#fff; margin-bottom:12px;">Trigger Sandbox Errors</h3>
+            
+            <div class="error-grid">
+              <button class="btn btn-secondary btn-sm btn-danger" onclick="triggerSandboxError('invalid_profile_url')">Invalid Profile (400)</button>
+              <button class="btn btn-secondary btn-sm btn-danger" onclick="triggerSandboxError('profile_unreachable')">Profile Unreachable (424)</button>
+              <button class="btn btn-secondary btn-sm btn-danger" onclick="triggerSandboxError('profile_malformed')">Profile Malformed (422)</button>
+              <button class="btn btn-secondary btn-sm btn-danger" onclick="triggerSandboxError('version_unsupported')">Unsupported Version (422)</button>
+              <button class="btn btn-secondary btn-sm btn-danger" onclick="triggerSandboxError('capabilities_incompatible')">Incompatible (200 Err)</button>
+              <button class="btn btn-secondary btn-sm btn-danger" onclick="triggerSandboxError('signature_missing')">Missing Sig (401)</button>
+              <button class="btn btn-secondary btn-sm btn-danger" onclick="triggerSandboxError('rate_limit')">Rate Limited (429)</button>
+              <button class="btn btn-secondary btn-sm btn-danger" onclick="triggerSandboxError('server_error')">Server Fault (500)</button>
+            </div>
+
+            <!-- Fallback continue_url Simulator -->
+            <div class="explanation-box" style="margin-top: 15px; border-color: rgba(239, 68, 68, 0.3);">
+              <h4 style="color:var(--color-error);"><i class="fa-solid fa-arrow-up-right-from-square"></i> Agent continue_url Fallback Flow</h4>
+              <p style="font-size:12px;">When automated negotiations fail, UCP allows graceful exit by directing users to a secure web form.</p>
+              <button class="btn btn-secondary btn-sm" style="margin-top: 10px;" onclick="simulateContinueFallback()">
+                Execute continue_url Handshake
+              </button>
+            </div>
+          </div>
+
+          <div class="code-panes">
+            <div class="code-container">
+              <div class="code-header">
+                <span><i class="fa-solid fa-code"></i> UCP Diagnostic Payload</span>
+                <button class="terminal-btn" onclick="copyCode('error-code-body')"><i class="fa-regular fa-copy"></i> Copy</button>
+              </div>
+              <div class="code-body" id="error-code-body">Select a diagnostic error button to trigger the API response payload...</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 11: SIGNALS & SECURITY -->
+      <section id="sec-security" class="panel-section">
+        <div class="section-header">
+          <h2 class="section-title"><i class="fa-solid fa-shield-halved"></i> UCP Security &amp; Signals</h2>
+          <span class="section-meta">signals.json</span>
+        </div>
+        <p class="section-intro">
+          UCP Signals collect context (IP, User Agent, custom metadata, and cryptographic device attestations) to enable silent fraud checks.
+        </p>
+        <div class="feature-grid">
+          <div class="control-pane">
+            <h3 style="color:#fff; margin-bottom:12px;">Signals Inspector</h3>
+            
+            <div class="input-group">
+              <span class="input-label">Simulated Buyer IP</span>
+              <input type="text" class="input-field" id="sig-buyer-ip" value="192.168.1.84">
+            </div>
+            
+            <div class="input-group">
+              <span class="input-label">Risk Evaluation (Custom com.shopbridge.risk_score)</span>
+              <div style="display:flex; align-items:center; gap:12px;">
+                <input type="range" min="0" max="1" step="0.05" value="0.15" class="input-field" style="flex:1;" id="sig-risk-slider" oninput="updateRiskScoreText(this.value)">
+                <span id="sig-risk-text" style="font-family:var(--font-mono); font-weight:700; width:50px;">0.15</span>
+              </div>
+            </div>
+
+            <button class="btn" onclick="generateSecuritySignals()">
+              <i class="fa-solid fa-gears"></i> Synthesize Signals
+            </button>
+
+            <!-- Namespace Governance -->
+            <div class="explanation-box">
+              <h4>Namespace Governance Map</h4>
+              <table style="width:100%; font-size:11px; margin-top:8px; border-collapse: collapse;">
+                <tr style="border-bottom:1px solid rgba(255,255,255,0.08); text-align:left;">
+                  <th style="padding:4px 0;">Prefix Namespace</th>
+                  <th>governing body</th>
+                </tr>
+                <tr>
+                  <td style="color:var(--color-primary); padding:4px 0;">dev.ucp.*</td>
+                  <td>ucp.dev Core WG</td>
+                </tr>
+                <tr>
+                  <td style="color:var(--color-success);">com.{vendor}.*</td>
+                  <td>Vendor Private Specs</td>
+                </tr>
+                <tr>
+                  <td style="color:var(--color-info);">org.{org}.*</td>
+                  <td>Organization Custom</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+
+          <div class="code-panes">
+            <!-- RFC 9421 Description -->
+            <div class="code-container" style="margin-bottom:16px;">
+              <div class="code-header">
+                <span><i class="fa-solid fa-signature"></i> HTTP Message Signatures (RFC 9421) Concept</span>
+              </div>
+              <div style="padding: 14px; font-size: 11px;">
+                <p>UCP endpoints require authorization headers conforming to the HTTP Message Signatures spec. Allows permissionless verification via keys advertised in profiles.</p>
+                <div style="font-family:var(--font-mono); color:#f3f4f6; background: rgba(0,0,0,0.4); padding:6px; border-radius:4px; margin-top:6px; font-size:10px;">
+                  Signature-Input: ucp-sig=("@method" "@target-uri" "ucp-agent");keyid="shopbridge_2026";alg="ES256"<br>
+                  Signature: ucp-sig=:MEQCID1vXfP4...:
+                </div>
+              </div>
+            </div>
+
+            <div class="code-container">
+              <div class="code-header">
+                <span><i class="fa-solid fa-file-shield"></i> Signals Body</span>
+                <button class="terminal-btn" onclick="copyCode('sig-code-body')"><i class="fa-regular fa-copy"></i> Copy</button>
+              </div>
+              <div class="code-body" id="sig-code-body">Generate signals to construct UCP attestation schemas...</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 12: VERSIONING -->
+      <section id="sec-versioning" class="panel-section">
+        <div class="section-header">
+          <h2 class="section-title"><i class="fa-solid fa-code-branch"></i> Versioning &amp; Compatibility</h2>
+          <span class="section-meta">UCP Versions API</span>
+        </div>
+        <p class="section-intro">
+          UCP utilizes chronological versioning strings (e.g. YYYY-MM-DD). Platforms negotiate version parameters during onboarding handshakes.
+        </p>
+        <div class="feature-grid">
+          <div class="control-pane">
+            <h3 style="color:#fff; margin-bottom:12px;">Interactive Version Handshake</h3>
+            
+            <div class="explanation-box" style="margin-bottom:15px;">
+              <h4>Select Agent Platform Profile Version</h4>
+              <div style="display:flex; justify-content:space-between; margin-top:10px;">
+                <button class="btn btn-secondary btn-sm" id="btn-ver-1" onclick="selectVersionDemo('2026-01-23')">v2026-01-23 (Legacy)</button>
+                <button class="btn btn-secondary btn-sm" id="btn-ver-2" onclick="selectVersionDemo('2026-04-08')">v2026-04-08 (Latest)</button>
+                <button class="btn btn-secondary btn-sm btn-danger" onclick="selectVersionDemo('2025-10-12')">v2025-10-12 (Unsupported)</button>
+              </div>
+            </div>
+
+            <div class="explanation-box">
+              <h4>Backwards Compatibility Matrix</h4>
+              <table style="width:100%; font-size:11px; margin-top:8px; border-collapse: collapse;">
+                <tr style="border-bottom:1px solid rgba(255,255,255,0.08); text-align:left;">
+                  <th style="padding:4px 0;">Safe (Non-Breaking) Changes</th>
+                  <th>Breaking (Renegotiate)</th>
+                </tr>
+                <tr>
+                  <td style="color:var(--color-success); padding:4px 0;">Adding Optional parameters</td>
+                  <td style="color:var(--color-error);">Renaming Capability Names</td>
+                </tr>
+                <tr>
+                  <td style="color:var(--color-success);">Adding Payment Handlers</td>
+                  <td style="color:var(--color-error);">Changing Minor Unit Scale</td>
+                </tr>
+                <tr>
+                  <td style="color:var(--color-success);">New API Services (Transports)</td>
+                  <td style="color:var(--color-error);">Removing Required Keys</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+
+          <div class="code-panes">
+            <div class="code-container">
+              <div class="code-header">
+                <span><i class="fa-solid fa-handshake-simple"></i> Handshake Result</span>
+                <button class="terminal-btn" onclick="copyCode('version-code-body')"><i class="fa-regular fa-copy"></i> Copy</button>
+              </div>
+              <div class="code-body" id="version-code-body">Select a version level to trigger handshake verification...</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Scrolling Unified Log Terminal -->
+    <footer class="unified-terminal" id="console-terminal">
+      <div class="terminal-header" onclick="toggleTerminal()">
+        <div class="terminal-title">
+          <i class="fa-solid fa-terminal"></i> UCP Unified API Log Console
+        </div>
+        <div class="terminal-controls">
+          <button class="terminal-btn" onclick="event.stopPropagation(); clearLogs()"><i class="fa-solid fa-trash-can"></i> Clear</button>
+          <button class="terminal-btn" id="terminal-toggle-btn"><i class="fa-solid fa-chevron-down"></i> Minimize</button>
+        </div>
+      </div>
+      <div class="terminal-console" id="console-terminal-lines">
+        <div class="console-log-line">
+          <span class="log-timestamp">15:39:21</span>
+          <span class="log-direction direction-system">[SYSTEM]</span>
+          <span class="log-text">ShopBridge Core engine loaded. Ready to run UCP compliance simulations.</span>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- Interactive 3DS Simulator Popover Modal -->
+  <div class="backdrop-modal" id="modal-3ds-challenge">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 style="color:var(--color-warning); font-size:16px;"><i class="fa-solid fa-shield-halved"></i> 3D Secure Validation Required</h3>
+        <button class="terminal-btn" onclick="close3DSModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:13px; color:var(--color-text-muted); margin-bottom:16px;">
+          The card issuer requests active client verification to complete card authorization processing.
+        </p>
+        <div style="background: rgba(255,255,255,0.03); border:1px solid var(--border-color); padding:16px; border-radius:8px; text-align:center;">
+          <p style="font-size:12px; font-weight:700; margin-bottom:12px;">NovaMart Bank Authorization Portal</p>
+          <p style="font-size:13px; margin-bottom:16px; color:#fff;">Enter confirmation OTP code: <strong>9941</strong></p>
+          <input type="text" class="input-field" style="width:120px; text-align:center; font-size:16px; letter-spacing:4px; margin-bottom:16px;" id="otp-input" placeholder="XXXX">
+          <div>
+            <button class="btn btn-sm" onclick="approve3DSChallenge()">Confirm Code</button>
+            <button class="btn btn-sm btn-secondary" onclick="close3DSModal()">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Core JavaScript -->
+  <script>
+    // Utility functions
+    const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+    
+    function logToTerminal(direction, text, payload = null) {
+      const container = document.getElementById('console-terminal-lines');
+      if (!container) return;
+      
+      const now = new Date();
+      const timeStr = now.toTimeString().split(' ')[0];
+      
+      const line = document.createElement('div');
+      line.className = 'console-log-line';
+      
+      let dirClass = 'direction-system';
+      if (direction === 'REST IN' || direction === 'MCP IN') dirClass = 'direction-in';
+      if (direction === 'REST OUT' || direction === 'MCP OUT') dirClass = 'direction-out';
+      if (direction === 'ERROR') dirClass = 'direction-error';
+      
+      let payloadHtml = '';
+      if (payload) {
+        payloadHtml = `<div class="log-text payload-preview">${highlightJson(payload)}</div>`;
+      }
+      
+      line.innerHTML = `
+        <span class="log-timestamp">${timeStr}</span>
+        <span class="log-direction ${dirClass}">[${direction}]</span>
+        <div style="display:flex; flex-direction:column; flex-grow:1;">
+          <span class="log-text">${text}</span>
+          ${payloadHtml}
+        </div>
+      `;
+      
+      container.appendChild(line);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function clearLogs() {
+      const container = document.getElementById('console-terminal-lines');
+      if (container) container.innerHTML = '';
+      logToTerminal('SYSTEM', 'Log cleared.');
+    }
+
+    function toggleTerminal() {
+      const term = document.getElementById('console-terminal');
+      const btn = document.getElementById('terminal-toggle-btn');
+      if (term.classList.contains('minimized')) {
+        term.classList.remove('minimized');
+        btn.innerHTML = '<i class="fa-solid fa-chevron-down"></i> Minimize';
+      } else {
+        term.classList.add('minimized');
+        btn.innerHTML = '<i class="fa-solid fa-chevron-up"></i> Expand';
+      }
+    }
+
+    function highlightJson(obj) {
+      if (!obj) return '';
+      let json = JSON.stringify(obj, null, 2);
+      json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+-]?\d+)?)/g, function (match) {
+        let cls = 'json-number';
+        if (/^"/.test(match)) {
+          if (/:$/.test(match)) {
+            cls = 'json-key';
+          } else {
+            cls = 'json-string';
+          }
+        } else if (/true|false/.test(match)) {
+          cls = 'json-boolean';
+        } else if (/null/.test(match)) {
+          cls = 'json-null';
+        }
+        return '<span class="' + cls + '">' + match + '</span>';
+      });
+    }
+
+    function copyCode(elementId) {
+      const el = document.getElementById(elementId);
+      if (!el) return;
+      const text = el.innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        alert('Copied to clipboard!');
+      });
+    }
+
+    // Active tab management
+    function switchTab(navEl, sectionId) {
+      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+      navEl.classList.add('active');
+      
+      document.querySelectorAll('.panel-section').forEach(el => el.classList.remove('active'));
+      const activeSec = document.getElementById('sec-' + sectionId);
+      if (activeSec) activeSec.classList.add('active');
+    }
+
+    // SECTION 1: PROFILES DATA
+    const businessProfile = {
+      "ucp": {
+        "version": "2026-04-08",
+        "services": {
+          "dev.ucp.shopping": {
+            "transports": {
+              "rest": {
+                "endpoint": "https://api.novamart.example.com/ucp/v1",
+                "schema_url": "https://ucp.dev/schemas/shopping/rest/v1.json"
+              },
+              "mcp": {
+                "endpoint": "https://mcp.novamart.example.com",
+                "schema_url": "https://ucp.dev/schemas/shopping/mcp/v1.json"
+              },
+              "a2a": {
+                "endpoint": "https://a2a.novamart.example.com",
+                "schema_url": "https://ucp.dev/schemas/shopping/a2a/v1.json"
+              },
+              "embedded": {
+                "endpoint": "https://checkout.novamart.example.com/iframe",
+                "schema_url": "https://ucp.dev/schemas/shopping/embedded/v1.json"
+              }
+            }
+          }
+        },
+        "capabilities": {
+          "dev.ucp.shopping.checkout": {
+            "versions": ["2026-04-08", "2026-01-23"]
+          },
+          "dev.ucp.shopping.cart": {
+            "versions": ["2026-04-08", "2026-01-23"]
+          },
+          "dev.ucp.shopping.fulfillment": {
+            "versions": ["2026-04-08"],
+            "extends": "dev.ucp.shopping.checkout"
+          },
+          "dev.ucp.shopping.discount": {
+            "versions": ["2026-04-08", "2026-01-23"],
+            "extends": ["dev.ucp.shopping.checkout", "dev.ucp.shopping.cart"]
+          },
+          "dev.ucp.shopping.order": {
+            "versions": ["2026-04-08"],
+            "config": {
+              "webhook_url": "https://api.novamart.example.com/ucp/webhooks"
+            }
+          },
+          "dev.ucp.common.identity_linking": {
+            "versions": ["2026-04-08"],
+            "config": {
+              "scopes": ["dev.ucp.shopping.order:read", "dev.ucp.shopping.order:manage"]
+            }
+          },
+          "dev.ucp.shopping.buyer_consent": {
+            "versions": ["2026-04-08"],
+            "extends": "dev.ucp.shopping.checkout"
+          }
+        },
+        "payment_handlers": {
+          "com.google.pay": {
+            "api_version": "2.0",
+            "merchant_info": {
+              "merchant_id": "1234-5678-9012",
+              "merchant_name": "NovaMart Store"
+            },
+            "allowed_payment_methods": [
+              {
+                "type": "CARD",
+                "parameters": {
+                  "allowed_auth_methods": ["PAN_ONLY", "CRYPTOGRAM_3DS"],
+                  "allowed_card_networks": ["AMEX", "DISCOVER", "MASTERCARD", "VISA"]
+                },
+                "tokenization_specification": {
+                  "type": "PAYMENT_GATEWAY",
+                  "parameters": {
+                    "gateway": "example",
+                    "gateway_merchant_id": "novamart-gateway-id"
+                  }
+                }
+              }
+            ]
+          },
+          "dev.shopify.shop_pay": {
+            "shop_id": "novamart-shop-88",
+            "supported_instruments": ["shop_pay"]
+          },
+          "dev.ucp.ap2_mandate_compatible_handlers": {
+            "supported_instruments": ["ap2_mandate"],
+            "config": {
+              "mandate_endpoint": "https://api.novamart.example.com/ucp/mandates"
+            }
+          }
+        },
+        "signing_keys": [
+          {
+            "kty": "EC",
+            "crv": "P-256",
+            "x": "MKBCTNIcKXYvGK1uW5dg_X1fDx4XGQ42uHGDJ229kbg",
+            "y": "8c4A6sU3N939Xf_r9rQ0G81m_X5YxZ29V5u9tZ7yDbg",
+            "kid": "novamart_2026",
+            "use": "sig",
+            "alg": "ES256"
+          }
+        ],
+        "supported_versions": {
+          "2026-04-08": "https://api.novamart.example.com/ucp/profiles/v2.json",
+          "2026-01-23": "https://api.novamart.example.com/ucp/profiles/v1.json"
+        }
+      }
+    };
+
+    const platformProfile = {
+      "ucp": {
+        "version": "2026-04-08",
+        "services": {
+          "dev.ucp.shopping": {
+            "transports": {
+              "rest": {
+                "endpoint": "https://agent.shopbridge.example.com/ucp/v1"
+              }
+            }
+          }
+        },
+        "capabilities": {
+          "dev.ucp.shopping.checkout": {
+            "versions": ["2026-04-08", "2026-01-23"]
+          },
+          "dev.ucp.shopping.cart": {
+            "versions": ["2026-04-08", "2026-01-23"]
+          },
+          "dev.ucp.shopping.fulfillment": {
+            "versions": ["2026-04-08"]
+          },
+          "dev.ucp.shopping.discount": {
+            "versions": ["2026-04-08", "2026-01-23"]
+          },
+          "dev.ucp.shopping.order": {
+            "versions": ["2026-04-08"]
+          },
+          "dev.ucp.common.identity_linking": {
+            "versions": ["2026-04-08"]
+          }
+        },
+        "payment_handlers": {
+          "com.google.pay": {
+            "supported_networks": ["VISA", "MASTERCARD", "AMEX"]
+          },
+          "dev.shopify.shop_pay": {
+            "supported_instruments": ["shop_pay"]
+          }
+        },
+        "signing_keys": [
+          {
+            "kty": "EC",
+            "crv": "P-256",
+            "x": "f83OJ3D2xF108ArC-KNC_4gOTwGlvY351kSTqK4RR14",
+            "y": "x_da65ntYufLwGA2At3RXIwCO3ODT79VKy9v-1_Hn48",
+            "kid": "shopbridge_2026",
+            "use": "sig",
+            "alg": "ES256"
+          }
+        ]
+      }
+    };
+
+    function showProfile(type) {
+      const header = document.getElementById('profile-pane-title');
+      const body = document.getElementById('profile-code-body');
+      
+      if (type === 'business') {
+        header.innerHTML = '<i class="fa-solid fa-store"></i> novamart_profile.json';
+        body.innerHTML = highlightJson(businessProfile);
+        logToTerminal('REST OUT', 'Requested NovaMart /.well-known/ucp Business Profile');
+        logToTerminal('REST IN', 'Returned NovaMart UCP Profile', businessProfile);
+      } else {
+        header.innerHTML = '<i class="fa-solid fa-robot"></i> shopbridge_profile.json';
+        body.innerHTML = highlightJson(platformProfile);
+        logToTerminal('SYSTEM', 'Loaded Local ShopBridge Platform Profile', platformProfile);
+      }
+    }
+
+    // SECTION 2: CAPABILITY NEGOTIATION
+    function negotiateCapabilities(bProf, pProf) {
+      const negoLog = [];
+      const activeCapabilities = {};
+      const prunedCapabilities = [];
+      
+      negoLog.push("Executing Step 1: Intersection Resolution...");
+      
+      // Step 1: Basic Intersection & Step 2: Version selection
+      const intersectedKeys = [];
+      for (const capName in bProf.ucp.capabilities) {
+        if (pProf.ucp.capabilities[capName]) {
+          // Check for mutual version
+          const bVers = bProf.ucp.capabilities[capName].versions;
+          const pVers = pProf.ucp.capabilities[capName].versions;
+          const mutualVers = bVers.filter(v => pVers.includes(v));
+          
+          if (mutualVers.length > 0) {
+            // Sort to select latest
+            mutualVers.sort((a,b) => b.localeCompare(a));
+            const selectedVer = mutualVers[0];
+            intersectedKeys.push(capName);
+            activeCapabilities[capName] = {
+              version: selectedVer,
+              extends: bProf.ucp.capabilities[capName].extends || null,
+              config: bProf.ucp.capabilities[capName].config || null
+            };
+            negoLog.push(`✔ Resolved capability '${capName}' on mutual version '${selectedVer}'`);
+          } else {
+            prunedCapabilities.push({ name: capName, reason: "No mutual version match" });
+            negoLog.push(`❌ Excluded capability '${capName}' - no mutual version matches. Merchant support: [${bVers}], Agent support: [${pVers}]`);
+          }
+        } else {
+          prunedCapabilities.push({ name: capName, reason: "Absent from platform capability array" });
+          negoLog.push(`❌ Excluded capability '${capName}' - absent from Agent Platform profile array`);
+        }
+      }
+      
+      // Step 3 & 4: Repeat Pruning of extension chains until stable
+      negoLog.push("Executing Step 3 & 4: Extension Dependency Check...");
+      let pruningActive = true;
+      let iteration = 1;
+      
+      while (pruningActive) {
+        pruningActive = false;
+        negoLog.push(`Iteration ${iteration} resolving transitive prunes...`);
+        
+        for (const capName in activeCapabilities) {
+          const extVal = activeCapabilities[capName].extends;
+          if (extVal) {
+            let parentsMatched = false;
+            
+            if (Array.isArray(extVal)) {
+              // Multi-parent: at least ONE parent must exist in intersection
+              parentsMatched = extVal.some(p => activeCapabilities[p] !== undefined);
+              if (!parentsMatched) {
+                prunedCapabilities.push({ name: capName, reason: `Orphaned multi-parent. Missing all of: [${extVal.join(', ')}]` });
+                delete activeCapabilities[capName];
+                pruningActive = true;
+                negoLog.push(`❌ Pruned extension '${capName}' - all parents [${extVal.join(', ')}] absent from active set`);
+              }
+            } else {
+              // Single parent: parent must exist in intersection
+              parentsMatched = activeCapabilities[extVal] !== undefined;
+              if (!parentsMatched) {
+                prunedCapabilities.push({ name: capName, reason: `Orphaned parent. Missing root: ${extVal}` });
+                delete activeCapabilities[capName];
+                pruningActive = true;
+                negoLog.push(`❌ Pruned extension '${capName}' - parent '${extVal}' absent from active set`);
+              }
+            }
+          }
+        }
+        iteration++;
+        if (iteration > 10) break; // Infinite loop fail-safe
+      }
+      
+      negoLog.push("Negotiation complete. Active capabilities set established.");
+      return { activeCapabilities, prunedCapabilities, negotiationLog: negoLog };
+    }
+
+    function executeNegotiationDemo() {
+      const result = negotiateCapabilities(businessProfile, platformProfile);
+      
+      const logsBody = document.getElementById('nego-logs-body');
+      logsBody.innerHTML = `<strong>Execution Log:</strong>\n` + result.negotiationLog.join('\n') + 
+                           `\n\n<strong>Active Resolved Capabilities:</strong>\n` + highlightJson(result.activeCapabilities);
+      
+      // Draw Trees
+      const visualView = document.getElementById('pruning-nodes-view');
+      visualView.style.display = 'flex';
+      visualView.innerHTML = `<h4 style="color:#fff; font-size:13px; margin-bottom:8px;"><i class="fa-solid fa-sitemap"></i> Tree Pruning Visualizer</h4>`;
+      
+      for (const capName in businessProfile.ucp.capabilities) {
+        const isPruned = !result.activeCapabilities[capName];
+        const spec = businessProfile.ucp.capabilities[capName];
+        let info = spec.extends ? ` (extends ${Array.isArray(spec.extends) ? spec.extends.join('/') : spec.extends})` : ' (root)';
+        
+        const node = document.createElement('div');
+        node.className = `cap-node ${isPruned ? 'pruned' : 'active'}`;
+        node.innerHTML = `
+          <span><strong>${capName}</strong>${info}</span>
+          <span>${isPruned ? '<i class="fa-solid fa-circle-minus" style="color:var(--color-error)"></i> PRUNED' : '<i class="fa-solid fa-circle-check" style="color:var(--color-success)"></i> ACTIVE'}</span>
+        `;
+        visualView.appendChild(node);
+      }
+      
+      logToTerminal('SYSTEM', 'Negotiation algorithm processed.', result);
+    }
+
+    // SECTION 3: MOCK CATALOG & SEARCH
+    const catalogDb = [
+      { id: "prod_1", title: "Quantum Buds Pro", description: "Active Noise Cancelling earbuds with high-fidelity glassmorphic acoustics.", price: 14900, image: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=400&q=80", category: "Electronics", availability: "in_stock", variants: [{ id: "v_1_1", name: "Cyber Black" }, { id: "v_1_2", name: "Glacial White" }] },
+      { id: "prod_2", title: "AuraView 27\" Monitor", description: "4K UHD glassmorphic display supporting micro-animation HDR profiles.", price: 34999, image: "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=400&q=80", category: "Electronics", availability: "in_stock", variants: [{ id: "v_2_1", name: "Standard Matte" }] },
+      { id: "prod_3", title: "VoltCharge Duo", description: "100W GaN dual-port fast charger with integrated safety signals.", price: 4900, image: "https://images.unsplash.com/photo-1622445262465-2481c457487f?w=400&q=80", category: "Electronics", availability: "limited", variants: [{ id: "v_3_1", name: "Single Unit" }] },
+      { id: "prod_4", title: "CyberWeave Tech Hoodie", description: "Water-resistant tech-wear utility hoodie with multi-parent pocket systems.", price: 8900, image: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=400&q=80", category: "Clothing", availability: "in_stock", variants: [{ id: "v_4_1", name: "Medium" }, { id: "v_4_2", name: "Large" }] },
+      { id: "prod_5", title: "Luxe Merino Beanie", description: "100% fine merino wool providing thermal comfort in harsh outdoor settings.", price: 2900, image: "https://images.unsplash.com/photo-1576871337632-b9aef4c17ab9?w=400&q=80", category: "Clothing", availability: "in_stock", variants: [{ id: "v_5_1", name: "One Size" }] },
+      { id: "prod_6", title: "Stratus Knit Sneakers", description: "Breathable recycled knit running shoes built for ultimate comfort.", price: 11999, image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=80", category: "Clothing", availability: "out_of_stock", variants: [{ id: "v_6_1", name: "US 9" }, { id: "v_6_2", name: "US 10" }] },
+      { id: "prod_7", title: "Lumina Smart Lamp", description: "Circadian adaptation ambient smart light matching room occupancy.", price: 7900, image: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=400&q=80", category: "Home", availability: "in_stock", variants: [{ id: "v_7_1", name: "Default White" }] },
+      { id: "prod_8", title: "HydroFlask Horizon", description: "32oz double-walled vacuum insulated beverage bottle.", price: 3900, image: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=400&q=80", category: "Home", availability: "in_stock", variants: [{ id: "v_8_1", name: "Alpine Blue" }, { id: "v_8_2", name: "Stone Gray" }] }
+    ];
+
+    async function searchCatalog(silent = false) {
+      const q = document.getElementById('cat-query').value.toLowerCase();
+      const cat = document.getElementById('cat-filter-category').value;
+      
+      if (!silent) {
+        logToTerminal('REST OUT', 'POST /catalog/search', { query: q, filters: { category: cat } });
+      }
+      await sleep(350);
+      
+      const filtered = catalogDb.filter(p => {
+        const matchesQuery = p.title.toLowerCase().includes(q) || p.description.toLowerCase().includes(q);
+        const matchesCategory = cat === "" || p.category === cat;
+        return matchesQuery && matchesCategory;
+      });
+      
+      const responsePayload = {
+        items: filtered,
+        next_cursor: null,
+        total_count: filtered.length,
+        ucp: {
+          version: "2026-04-08",
+          capabilities: ["dev.ucp.shopping.catalog"]
+        }
+      };
+      
+      if (!silent) {
+        logToTerminal('REST IN', `POST /catalog/search returned ${filtered.length} products`, responsePayload);
+        document.getElementById('cat-code-body').innerHTML = highlightJson(responsePayload);
+      }
+      
+      renderCatalogGrid(filtered);
+    }
+
+    function renderCatalogGrid(items) {
+      const container = document.getElementById('catalog-products-container');
+      container.innerHTML = '';
+      
+      items.forEach(p => {
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.innerHTML = `
+          <div class="product-img" style="background-image: url('${p.image}')">
+            <span class="product-cat-tag">${p.category}</span>
+          </div>
+          <div class="product-info">
+            <span class="product-title">${p.title}</span>
+            <span class="product-price">$${(p.price / 100).toFixed(2)}</span>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:auto;">
+              <span style="font-size:10px; color:${p.availability==='in_stock' ? 'var(--color-success)' : p.availability==='limited' ? 'var(--color-warning)' : 'var(--color-error)'}; font-weight:700;">
+                ${p.availability.toUpperCase().replace('_',' ')}
+              </span>
+              <button class="btn btn-sm btn-secondary" onclick="event.stopPropagation(); addToCart('${p.id}')">
+                <i class="fa-solid fa-plus"></i> Add
+              </button>
+            </div>
+          </div>
+        `;
+        card.onclick = () => showProductDetails(p.id);
+        container.appendChild(card);
+      }
+      
+      if (items.length === 0) {
+        container.innerHTML = `<p style="font-size:13px; color:var(--color-text-muted);">No products found matching active query filters.</p>`;
+      }
+    }
+
+    async function showProductDetails(id) {
+      logToTerminal('REST OUT', `GET /catalog/items/${id}`);
+      await sleep(250);
+      const product = catalogDb.find(p => p.id === id);
+      if (product) {
+        logToTerminal('REST IN', `GET /catalog/items/${id} success`, product);
+        document.getElementById('cat-code-body').innerHTML = highlightJson(product);
+      }
+    }
+
+    // SECTION 4: CART & DISCOUNTS
+    let activeCart = {
+      id: "cart_8842",
+      status: "active",
+      line_items: [
+        { item_id: "prod_1", variant_id: "v_1_1", quantity: 1, title: "Quantum Buds Pro", price: 14900 },
+        { item_id: "prod_5", variant_id: "v_5_1", quantity: 2, title: "Luxe Merino Beanie", price: 2900 }
+      ],
+      discounts: [],
+      applied_code: null
+    };
+
+    function updateCartDisplay() {
+      const container = document.getElementById('active-cart-list');
+      if (!container) return;
+      container.innerHTML = '';
+      
+      let subtotal = 0;
+      activeCart.line_items.forEach((item, index) => {
+        const itemTotal = item.price * item.quantity;
+        subtotal += itemTotal;
+        
+        const row = document.createElement('div');
+        row.className = 'cart-item-row';
+        row.innerHTML = `
+          <div class="cart-item-info">
+            <span class="cart-item-name">${item.title}</span>
+            <span class="cart-item-qty">Qty: ${item.quantity} × $${(item.price / 100).toFixed(2)}</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span style="font-weight:700;">$${(itemTotal / 100).toFixed(2)}</span>
+            <button class="btn btn-secondary btn-sm" style="padding:2px 6px;" onclick="adjustCartQty(${index}, -1)"><i class="fa-solid fa-minus"></i></button>
+            <button class="btn btn-secondary btn-sm" style="padding:2px 6px;" onclick="adjustCartQty(${index}, 1)"><i class="fa-solid fa-plus"></i></button>
+          </div>
+        `;
+        container.appendChild(row);
+      });
+
+      // Calulate totals
+      let shipping = subtotal > 10000 ? 0 : 1500; // Free shipping over $100
+      let discountAmt = 0;
+      
+      // Apply mock discounts
+      activeCart.discounts.forEach(d => {
+        if (d.type === 'percentage') {
+          discountAmt += Math.round(subtotal * (d.amount / 100));
+        } else if (d.type === 'fixed_shipping') {
+          shipping = 0;
+        }
+      });
+
+      let tax = Math.round((subtotal - discountAmt) * 0.08); // 8% Tax
+      let grandTotal = subtotal + shipping + tax - discountAmt;
+      if (grandTotal < 0) grandTotal = 0;
+
+      container.innerHTML += `
+        <div class="cart-total-row" style="margin-top:16px;">
+          <span>Subtotal</span>
+          <span>$${(subtotal / 100).toFixed(2)}</span>
+        </div>
+        ${discountAmt > 0 ? `
+        <div class="cart-total-row" style="color:var(--color-success)">
+          <span>Discount (Coupon)</span>
+          <span>-$${(discountAmt / 100).toFixed(2)}</span>
+        </div>` : ''}
+        <div class="cart-total-row">
+          <span>Shipping (Est.)</span>
+          <span>${shipping === 0 ? 'FREE' : `$${(shipping / 100).toFixed(2)}`}</span>
+        </div>
+        <div class="cart-total-row">
+          <span>Tax (8%)</span>
+          <span>$${(tax / 100).toFixed(2)}</span>
+        </div>
+        <div class="cart-total-row cart-total-grand">
+          <span>Grand Total</span>
+          <span>$${(grandTotal / 100).toFixed(2)}</span>
+        </div>
+      `;
+
+      // Store calculated stats directly
+      activeCart.totals = {
+        subtotal,
+        shipping,
+        tax,
+        discount: discountAmt,
+        total: grandTotal
+      };
+    }
+
+    async function addToCart(id) {
+      const product = catalogDb.find(p => p.id === id);
+      if (!product) return;
+      
+      const existing = activeCart.line_items.find(i => i.item_id === id);
+      if (existing) {
+        existing.quantity++;
+      } else {
+        activeCart.line_items.push({
+          item_id: product.id,
+          variant_id: product.variants[0].id,
+          quantity: 1,
+          title: product.title,
+          price: product.price
+        });
+      }
+      
+      logToTerminal('REST OUT', 'PATCH /carts/cart_8842', { line_items: activeCart.line_items });
+      await sleep(300);
+      updateCartDisplay();
+      
+      const responseObj = {
+        ucp: { version: "2026-04-08", capabilities: ["checkout", "cart", "discount"] },
+        id: "cart_8842",
+        status: "active",
+        line_items: activeCart.line_items,
+        totals: activeCart.totals
+      };
+      
+      logToTerminal('REST IN', 'Cart successfully updated', responseObj);
+      document.getElementById('cart-code-body').innerHTML = highlightJson(responseObj);
+    }
+
+    async function adjustCartQty(index, change) {
+      activeCart.line_items[index].quantity += change;
+      if (activeCart.line_items[index].quantity <= 0) {
+        activeCart.line_items.splice(index, 1);
+      }
+      
+      logToTerminal('REST OUT', 'PATCH /carts/cart_8842', { line_items: activeCart.line_items });
+      await sleep(250);
+      updateCartDisplay();
+      
+      const responseObj = {
+        ucp: { version: "2026-04-08", capabilities: ["checkout", "cart", "discount"] },
+        id: "cart_8842",
+        status: "active",
+        line_items: activeCart.line_items,
+        totals: activeCart.totals
+      };
+      logToTerminal('REST IN', 'Cart adjusted', responseObj);
+      document.getElementById('cart-code-body').innerHTML = highlightJson(responseObj);
+    }
+
+    async function applyPromo() {
+      const code = document.getElementById('promo-code').value.toUpperCase().trim();
+      logToTerminal('REST OUT', 'POST /carts/cart_8842/discounts', { code });
+      await sleep(400);
+
+      let discountObj = null;
+      if (code === "SAVE10") {
+        discountObj = { id: "disc_10", code: "SAVE10", type: "percentage", amount: 10, description: "10% off Cart Subtotal" };
+        activeCart.discounts = [discountObj];
+        activeCart.applied_code = "SAVE10";
+      } else if (code === "FREESHIP") {
+        discountObj = { id: "disc_free", code: "FREESHIP", type: "fixed_shipping", amount: 0, description: "Free Shipping" };
+        activeCart.discounts = [discountObj];
+        activeCart.applied_code = "FREESHIP";
+      } else {
+        logToTerminal('ERROR', 'Invalid promo code', { error_code: "invalid_discount_code", message: "Promo code entered is not valid" });
+        return;
+      }
+
+      updateCartDisplay();
+      const responseObj = {
+        ucp: { version: "2026-04-08", capabilities: ["checkout", "cart", "discount"] },
+        id: "cart_8842",
+        status: "active",
+        line_items: activeCart.line_items,
+        discounts: activeCart.discounts,
+        totals: activeCart.totals
+      };
+      
+      logToTerminal('REST IN', `Applied Promo Code ${code}`, responseObj);
+      document.getElementById('cart-code-body').innerHTML = highlightJson(responseObj);
+    }
+
+    function goToCheckoutSection() {
+      // Transition tab in sidebar
+      const navItem = Array.from(document.querySelectorAll('.nav-list .nav-item')).find(el => el.innerText.includes('Checkout'));
+      if (navItem) switchTab(navItem, 'checkout');
+      initiateCheckoutFlow();
+    }
+
+    // SECTION 5: CHECKOUT LIFECYCLE (3-STATE ENGINE)
+    let currentCheckoutSession = null;
+    let selectedPaymentHandler = 'com.google.pay';
+
+    function getCheckoutPayload(state) {
+      if (state === 'incomplete') {
+        return {
+          id: "chk_99218",
+          status: "incomplete",
+          currency: "USD",
+          buyer: { email: "agent.user@example.com", first_name: "", last_name: "" },
+          line_items: activeCart.line_items,
+          totals: [
+            { type: "subtotal", amount: activeCart.totals.subtotal },
+            { type: "shipping", amount: 1500 },
+            { type: "tax", amount: 0 },
+            { type: "discount", amount: activeCart.totals.discount },
+            { type: "total", amount: activeCart.totals.subtotal + 1500 - activeCart.totals.discount }
+          ],
+          fulfillment: {
+            methods: [
+              {
+                id: "ship_method_1",
+                destinations: [],
+                groups: [
+                  {
+                    options: [
+                      { id: "std", label: "Standard Delivery", price: 1500 },
+                      { id: "exp", label: "Express Shipping", price: 2500 },
+                      { id: "ovn", label: "Overnight Delivery", price: 4500 }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          payment: {
+            handlers: businessProfile.ucp.payment_handlers
+          },
+          messages: [
+            { type: "info", code: "buyer_info_required", content: "Please provide shipping address and name", severity: "required" }
+          ],
+          links: [
+            { rel: "self", href: "https://api.novamart.example.com/ucp/v1/checkout-sessions/chk_99218" }
+          ]
+        };
+      } else if (state === 'ready_for_complete') {
+        // Updated state totals after adding shipping address and selecting standard
+        const shipCost = currentCheckoutSession.selectedShipOption === 'std' ? 1500 : currentCheckoutSession.selectedShipOption === 'exp' ? 2500 : 4500;
+        const taxVal = Math.round((activeCart.totals.subtotal - activeCart.totals.discount) * 0.08);
+        const newTotal = activeCart.totals.subtotal + shipCost + taxVal - activeCart.totals.discount;
+        
+        return {
+          id: "chk_99218",
+          status: "ready_for_complete",
+          currency: "USD",
+          buyer: {
+            email: "agent.user@example.com",
+            first_name: currentCheckoutSession.first_name || "Jane",
+            last_name: currentCheckoutSession.last_name || "Doe",
+            shipping_address: {
+              street: currentCheckoutSession.street || "123 Agent way",
+              city: currentCheckoutSession.city || "San Jose",
+              state: currentCheckoutSession.state || "CA",
+              zip: currentCheckoutSession.zip || "95112"
+            }
+          },
+          line_items: activeCart.line_items,
+          totals: [
+            { type: "subtotal", amount: activeCart.totals.subtotal },
+            { type: "shipping", amount: shipCost },
+            { type: "tax", amount: taxVal },
+            { type: "discount", amount: activeCart.totals.discount },
+            { type: "total", amount: newTotal }
+          ],
+          fulfillment: {
+            methods: [
+              {
+                id: "ship_method_1",
+                destinations: [{ id: "dest_1", address: currentCheckoutSession.shipping_address }],
+                selected_destination_id: "dest_1",
+                groups: [
+                  {
+                    options: [
+                      { id: "std", label: "Standard Delivery", price: 1500 },
+                      { id: "exp", label: "Express Shipping", price: 2500 },
+                      { id: "ovn", label: "Overnight Delivery", price: 4500 }
+                    ],
+                    selected_option_id: currentCheckoutSession.selectedShipOption || "std"
+                  }
+                ]
+              }
+            ]
+          },
+          payment: {
+            handlers: {
+              "com.google.pay": businessProfile.ucp.payment_handlers["com.google.pay"],
+              "dev.shopify.shop_pay": businessProfile.ucp.payment_handlers["dev.shopify.shop_pay"]
+            }
+          },
+          messages: [],
+          links: [
+            { rel: "self", href: "https://api.novamart.example.com/ucp/v1/checkout-sessions/chk_99218" }
+          ]
+        };
+      }
+    }
+
+    async function initiateCheckoutFlow() {
+      // Stepper CSS updates
+      document.getElementById('step-ind-1').className = 'step-indicator complete';
+      document.getElementById('step-ind-2').className = 'step-indicator active';
+      document.getElementById('step-ind-3').className = 'step-indicator';
+      document.getElementById('step-ind-4').className = 'step-indicator';
+
+      logToTerminal('REST OUT', 'POST /checkout-sessions', {
+        line_items: activeCart.line_items.map(i => ({ item_id: i.item_id, quantity: i.quantity })),
+        buyer: { email: "agent.user@example.com" }
+      });
+      await sleep(500);
+
+      currentCheckoutSession = {
+        first_name: "",
+        last_name: "",
+        street: "",
+        city: "",
+        state: "",
+        zip: "",
+        selectedShipOption: "std"
+      };
+
+      const responseObj = getCheckoutPayload('incomplete');
+      logToTerminal('REST IN', 'Checkout Session Created [State 1 - Incomplete]', responseObj);
+      
+      document.getElementById('chk-endpoint-title').innerHTML = '<i class="fa-solid fa-network-wired"></i> POST /checkout-sessions';
+      document.getElementById('checkout-code-body').innerHTML = highlightJson(responseObj);
+
+      // Render shipping info form
+      renderCheckoutStep2Form();
+    }
+
+    function renderCheckoutStep2Form() {
+      const container = document.getElementById('checkout-dynamic-interaction');
+      container.innerHTML = `
+        <h3 style="color:#fff; margin-bottom:12px;">Step 2: Shipping &amp; Fulfillment</h3>
+        
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div class="input-group">
+            <span class="input-label">First Name</span>
+            <input type="text" class="input-field" id="chk-fname" value="Jane">
+          </div>
+          <div class="input-group">
+            <span class="input-label">Last Name</span>
+            <input type="text" class="input-field" id="chk-lname" value="Doe">
+          </div>
+        </div>
+        
+        <div class="input-group">
+          <span class="input-label">Shipping Address</span>
+          <input type="text" class="input-field" id="chk-street" value="123 Agent Way">
+        </div>
+        
+        <div style="display:grid; grid-template-columns:2fr 1fr 1fr; gap:12px;">
+          <div class="input-group">
+            <span class="input-label">City</span>
+            <input type="text" class="input-field" id="chk-city" value="San Jose">
+          </div>
+          <div class="input-group">
+            <span class="input-label">State</span>
+            <input type="text" class="input-field" id="chk-state" value="CA">
+          </div>
+          <div class="input-group">
+            <span class="input-label">Zip</span>
+            <input type="text" class="input-field" id="chk-zip" value="95112">
+          </div>
+        </div>
+
+        <div class="input-group">
+          <span class="input-label">Delivery speed option</span>
+          <select class="input-field" id="chk-ship-opt" onchange="currentCheckoutSession.selectedShipOption = this.value">
+            <option value="std">Standard Delivery ($15.00)</option>
+            <option value="exp">Express Shipping ($25.00)</option>
+            <option value="ovn">Overnight Delivery ($45.00)</option>
+          </select>
+        </div>
+
+        <button class="btn" style="margin-top:10px;" onclick="submitFulfillmentDetails()">
+          Calculate Tax &amp; Continue
+        </button>
+      `;
+    }
+
+    async function submitFulfillmentDetails() {
+      // Collect values
+      currentCheckoutSession.first_name = document.getElementById('chk-fname').value;
+      currentCheckoutSession.last_name = document.getElementById('chk-lname').value;
+      currentCheckoutSession.street = document.getElementById('chk-street').value;
+      currentCheckoutSession.city = document.getElementById('chk-city').value;
+      currentCheckoutSession.state = document.getElementById('chk-state').value;
+      currentCheckoutSession.zip = document.getElementById('chk-zip').value;
+      currentCheckoutSession.selectedShipOption = document.getElementById('chk-ship-opt').value;
+
+      document.getElementById('step-ind-2').className = 'step-indicator complete';
+      document.getElementById('step-ind-3').className = 'step-indicator active';
+
+      const patchReq = {
+        buyer: {
+          first_name: currentCheckoutSession.first_name,
+          last_name: currentCheckoutSession.last_name,
+          shipping_address: {
+            street: currentCheckoutSession.street,
+            city: currentCheckoutSession.city,
+            state: currentCheckoutSession.state,
+            zip: currentCheckoutSession.zip
+          }
+        },
+        fulfillment: {
+          selected_destination_id: "dest_1",
+          selected_option_id: currentCheckoutSession.selectedShipOption
+        }
+      };
+
+      logToTerminal('REST OUT', 'PATCH /checkout-sessions/chk_99218', patchReq);
+      await sleep(450);
+
+      const responseObj = getCheckoutPayload('ready_for_complete');
+      logToTerminal('REST IN', 'Fulfillment Applied [State 2 - Ready For Complete]', responseObj);
+      
+      document.getElementById('chk-endpoint-title').innerHTML = '<i class="fa-solid fa-network-wired"></i> PATCH /checkout-sessions/chk_99218';
+      document.getElementById('checkout-code-body').innerHTML = highlightJson(responseObj);
+
+      // Render payment handler selector
+      renderCheckoutStep3Form();
+    }
+
+    function renderCheckoutStep3Form() {
+      const container = document.getElementById('checkout-dynamic-interaction');
+      container.innerHTML = `
+        <h3 style="color:#fff; margin-bottom:12px;">Step 3: Secure Payment Portal</h3>
+        
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <div class="payment-handler-card ${selectedPaymentHandler==='com.google.pay' ? 'selected' : ''}" onclick="selectCheckoutPayment('com.google.pay')">
+            <span><i class="fa-brands fa-google-pay" style="font-size:30px; color:#fff; vertical-align:middle; margin-right:10px;"></i> Google Pay Wallet</span>
+            <i class="fa-solid fa-circle-check" style="color:var(--color-primary);"></i>
+          </div>
+
+          <div class="payment-handler-card ${selectedPaymentHandler==='dev.shopify.shop_pay' ? 'selected' : ''}" onclick="selectCheckoutPayment('dev.shopify.shop_pay')">
+            <span><i class="fa-solid fa-bag-shopping" style="font-size:20px; color:#5e35b1; vertical-align:middle; margin-right:10px;"></i> Shop Pay Gateway</span>
+            <i class="fa-solid fa-circle-check" style="color:var(--color-primary);"></i>
+          </div>
+
+          <div class="payment-handler-card ${selectedPaymentHandler==='test_3ds' ? 'selected' : ''}" onclick="selectCheckoutPayment('test_3ds')">
+            <span><i class="fa-solid fa-shield-halved" style="font-size:20px; color:var(--color-warning); vertical-align:middle; margin-right:10px;"></i> Visa Direct (Direct + 3DS Challenge)</span>
+            <i class="fa-solid fa-circle-check" style="color:var(--color-primary);"></i>
+          </div>
+        </div>
+
+        <button class="btn" style="margin-top:16px;" onclick="completeCheckoutTransaction()">
+          <i class="fa-solid fa-lock"></i> Authorize &amp; Finish Payment
+        </button>
+      `;
+    }
+
+    function selectCheckoutPayment(handler) {
+      selectedPaymentHandler = handler;
+      renderCheckoutStep3Form();
+    }
+
+    async function completeCheckoutTransaction() {
+      const signals = {
+        "dev.ucp.buyer_ip": "192.168.1.84",
+        "dev.ucp.user_agent": navigator.userAgent
+      };
+
+      let paymentDetails = {};
+      if (selectedPaymentHandler === 'com.google.pay') {
+        paymentDetails = {
+          instruments: [{
+            id: "inst_gpay",
+            handler_id: "com.google.pay",
+            type: "wallet",
+            selected: true,
+            display: { brand: "Visa", last_digits: "4111" },
+            credential: { type: "token", token: "gpay_token_sec_8841" }
+          }]
+        };
+      } else if (selectedPaymentHandler === 'dev.shopify.shop_pay') {
+        paymentDetails = {
+          instruments: [{
+            id: "inst_shoppay",
+            handler_id: "dev.shopify.shop_pay",
+            type: "gateway",
+            selected: true,
+            display: { brand: "Mastercard", last_digits: "8821" },
+            credential: { type: "token", token: "shoppay_token_x99" }
+          }]
+        };
+      } else {
+        // Direct 3DS scenario
+        paymentDetails = {
+          instruments: [{
+            id: "inst_direct_visa",
+            handler_id: "dev.novamart.direct_tokenizer",
+            type: "card",
+            selected: true,
+            display: { brand: "Visa", last_digits: "9941" },
+            credential: { type: "card_token", token: "tok_visa_challenge_required" }
+          }]
+        };
+      }
+
+      const completeReq = {
+        payment: paymentDetails,
+        signals: signals
+      };
+
+      logToTerminal('REST OUT', 'POST /checkout-sessions/chk_99218/complete', completeReq);
+      await sleep(600);
+
+      if (selectedPaymentHandler === 'test_3ds') {
+        // Challenge escalation sequence
+        const escalationResponse = {
+          id: "chk_99218",
+          status: "requires_escalation",
+          messages: [{
+            type: "warning",
+            code: "requires_3ds",
+            severity: "requires_buyer_input",
+            content: "Please secure bank 3DS validation verification details.",
+            continue_url: "https://bank.example.com/3ds/challenge/chk_99218"
+          }]
+        };
+
+        logToTerminal('REST IN', 'Escalation Required [Requires 3D Secure Validation]', escalationResponse);
+        document.getElementById('chk-endpoint-title').innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> POST /checkout-sessions/chk_99218/complete -> 401';
+        document.getElementById('checkout-code-body').innerHTML = highlightJson(escalationResponse);
+        
+        // Show simulated modal
+        open3DSModal();
+      } else {
+        // Success path
+        handleCheckoutSuccess();
+      }
+    }
+
+    function open3DSModal() {
+      document.getElementById('modal-3ds-challenge').classList.add('active');
+    }
+
+    function close3DSModal() {
+      document.getElementById('modal-3ds-challenge').classList.remove('active');
+    }
+
+    async function approve3DSChallenge() {
+      close3DSModal();
+      logToTerminal('SYSTEM', '3DS Validation Callback Received. Retrying checkout transaction completion...');
+      await sleep(350);
+      
+      const retryReq = {
+        payment: {
+          instruments: [{
+            id: "inst_direct_visa",
+            handler_id: "dev.novamart.direct_tokenizer",
+            type: "card",
+            selected: true,
+            display: { brand: "Visa", last_digits: "9941" },
+            credential: { type: "card_token", token: "tok_visa_challenge_approved" }
+          }]
+        },
+        signals: {
+          "dev.ucp.buyer_ip": "192.168.1.84",
+          "dev.ucp.user_agent": navigator.userAgent
+        }
+      };
+
+      logToTerminal('REST OUT', 'POST /checkout-sessions/chk_99218/complete (Retry)', retryReq);
+      await sleep(400);
+      handleCheckoutSuccess();
+    }
+
+    function handleCheckoutSuccess() {
+      document.getElementById('step-ind-3').className = 'step-indicator complete';
+      document.getElementById('step-ind-4').className = 'step-indicator complete';
+
+      const successResponse = {
+        id: "chk_99218",
+        status: "completed",
+        order_id: "order_94118",
+        created_at: new Date().toISOString()
+      };
+
+      logToTerminal('REST IN', 'Checkout Session Success [State 3 - Completed]', successResponse);
+      document.getElementById('chk-endpoint-title').innerHTML = '<i class="fa-solid fa-circle-check" style="color:var(--color-success)"></i> Checkout Finalized';
+      document.getElementById('checkout-code-body').innerHTML = highlightJson(successResponse);
+
+      // Render Step 4 Order complete pane
+      const container = document.getElementById('checkout-dynamic-interaction');
+      container.innerHTML = `
+        <div style="text-align:center; padding: 30px;">
+          <i class="fa-solid fa-circle-check" style="font-size:50px; color:var(--color-success); margin-bottom:16px;"></i>
+          <h3 style="color:#fff; margin-bottom:8px;">Order Successfully Placed!</h3>
+          <p style="font-size:13px; color:var(--color-text-muted); margin-bottom:20px;">
+            Transaction finalized on Order ID: <strong>order_94118</strong>. Standard tracking lifecycles have begun.
+          </p>
+          <button class="btn btn-secondary" onclick="viewSimulatedOrderTimeline()">
+            <i class="fa-solid fa-box-open"></i> Go to Order Timeline
+          </button>
+        </div>
+      `;
+
+      // Set active orders database
+      currentOrderData = {
+        ucp: { version: "2026-04-08" },
+        id: "order_94118",
+        checkout_id: "chk_99218",
+        permalink_url: "https://novamart.example.com/orders/order_94118",
+        line_items: activeCart.line_items,
+        status: "confirmed",
+        fulfillment: {
+          expectations: [{
+            id: "exp_1",
+            line_items: activeCart.line_items,
+            method_type: "shipping",
+            destination: { street: currentCheckoutSession.street, city: currentCheckoutSession.city },
+            description: "Arrives in 2-3 business days",
+            fulfillable_on: "now"
+          }],
+          events: []
+        },
+        totals: activeCart.totals,
+        adjustments: []
+      };
+
+      // Expose Order webhook buttons
+      document.getElementById('order-webhook-buttons').className = '';
+      renderOrderTimeline();
+    }
+
+    function viewSimulatedOrderTimeline() {
+      const navItem = Array.from(document.querySelectorAll('.nav-list .nav-item')).find(el => el.innerText.includes('Order'));
+      if (navItem) switchTab(navItem, 'orders');
+    }
+
+    // SECTION 6: IDENTITY LINKING (OAUTH 2.0 FLOW)
+    let isOAuthConnected = false;
+
+    function loadOAuthDiscovery() {
+      const discoveryObj = {
+        issuer: "https://auth.novamart.example.com",
+        authorization_endpoint: "https://auth.novamart.example.com/oauth/authorize",
+        token_endpoint: "https://auth.novamart.example.com/oauth/token",
+        revocation_endpoint: "https://auth.novamart.example.com/oauth/revoke",
+        scopes_supported: [
+          "dev.ucp.shopping.checkout", 
+          "dev.ucp.shopping.order:read", 
+          "dev.ucp.shopping.order:manage"
+        ],
+        response_types_supported: ["code"],
+        grant_types_supported: ["authorization_code", "refresh_token"],
+        token_endpoint_auth_methods_supported: ["client_secret_basic"],
+        service_documentation: "https://ucp.dev/docs/identity"
+      };
+
+      logToTerminal('REST OUT', 'GET /.well-known/oauth-authorization-server');
+      logToTerminal('REST IN', 'OAuth Discovery Configuration Returned', discoveryObj);
+      document.getElementById('oauth-code-body').innerHTML = highlightJson(discoveryObj);
+    }
+
+    async function triggerOAuthFlow() {
+      const btn = document.getElementById('btn-oauth-action');
+      const statusText = document.getElementById('oauth-status-text');
+      const indicator = document.getElementById('oauth-connected-status');
+      
+      if (isOAuthConnected) {
+        // Revoke
+        logToTerminal('REST OUT', 'POST /oauth/revoke', { token: "ac_token_shopbridge_8841" });
+        await sleep(300);
+        logToTerminal('REST IN', 'OAuth Revocation Confirmed. Connection severed.', { status: "revoked" });
+        
+        isOAuthConnected = false;
+        btn.innerText = "Connect Agent Account";
+        btn.className = "btn";
+        statusText.innerText = "Disconnected";
+        indicator.style.backgroundColor = "var(--color-error)";
+        document.getElementById('oauth-code-body').innerHTML = 'Account Connection Terminated.';
+      } else {
+        // Connect flow
+        const nonce = Math.random().toString(36).substring(7);
+        const authUrl = `https://auth.novamart.example.com/oauth/authorize?response_type=code&client_id=shopbridge_platform_id&redirect_uri=https://agent.shopbridge.example.com/oauth/callback&scope=dev.ucp.shopping.order:read+dev.ucp.shopping.order:manage&state=${nonce}`;
+        
+        logToTerminal('SYSTEM', `Redirecting client authorization popover flow. State Nonce: ${nonce}`);
+        document.getElementById('oauth-code-body').innerHTML = `Redirect Location:\n${authUrl}`;
+        
+        await sleep(600);
+        // Show simulated consent popup
+        const userConsent = confirm("Consent Prompt:\nShopBridge Agent requests permissions to:\n✔ Read your active orders\n✔ Manage your shopping checks\n\nDo you want to authorize these scopes?");
+        
+        if (userConsent) {
+          logToTerminal('REST OUT', 'POST /oauth/token', {
+            grant_type: "authorization_code",
+            code: "auth_code_novamart_sec_12284",
+            redirect_uri: "https://agent.shopbridge.example.com/oauth/callback",
+            client_id: "shopbridge_platform_id"
+          });
+          
+          await sleep(400);
+          
+          const tokenObj = {
+            access_token: "ac_token_shopbridge_8841",
+            token_type: "Bearer",
+            expires_in: 3600,
+            refresh_token: "ref_token_shopbridge_x0088",
+            scope: "dev.ucp.shopping.order:read dev.ucp.shopping.order:manage"
+          };
+          
+          logToTerminal('REST IN', 'OAuth Token Successfully Exchanged', tokenObj);
+          document.getElementById('oauth-code-body').innerHTML = highlightJson(tokenObj);
+          
+          isOAuthConnected = true;
+          btn.innerText = "Revoke Access Credentials";
+          btn.className = "btn btn-danger";
+          statusText.innerText = "Connected & Active";
+          indicator.style.backgroundColor = "var(--color-success)";
+        } else {
+          logToTerminal('ERROR', 'OAuth Consent Denied by Customer', { error: "access_denied" });
+        }
+      }
+    }
+
+    // SECTION 7: ORDER LIFECYCLES & WEBHOOKS
+    let currentOrderData = null;
+
+    function renderOrderTimeline() {
+      const container = document.getElementById('order-timeline-container');
+      if (!currentOrderData) return;
+
+      container.innerHTML = `
+        <div class="timeline-event active">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <div class="timeline-time">${new Date().toISOString()}</div>
+            <div class="timeline-title">Order Created (Status: ${currentOrderData.status.toUpperCase()})</div>
+            <div class="timeline-desc">Finalized from checkout. Expected arrivals initiated.</div>
+          </div>
+        </div>
+      `;
+
+      currentOrderData.fulfillment.events.forEach(evt => {
+        const line = document.createElement('div');
+        line.className = `timeline-event ${evt.type}`;
+        line.innerHTML = `
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <div class="timeline-time">${evt.occurred_at}</div>
+            <div class="timeline-title">Fulfillment Event: ${evt.type.toUpperCase()}</div>
+            <div class="timeline-desc">${evt.description} ${evt.tracking_number ? `(Tracking: ${evt.tracking_number})` : ''}</div>
+          </div>
+        `;
+        container.insertBefore(line, container.firstChild);
+      });
+
+      currentOrderData.adjustments.forEach(adj => {
+        const line = document.createElement('div');
+        line.className = 'timeline-event refunded';
+        line.innerHTML = `
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <div class="timeline-time">${adj.occurred_at}</div>
+            <div class="timeline-title">Adjustment: ${adj.type.toUpperCase()} (${adj.status.toUpperCase()})</div>
+            <div class="timeline-desc">${adj.description} (${(adj.totals[0].amount / 100).toFixed(2)})</div>
+          </div>
+        `;
+        container.insertBefore(line, container.firstChild);
+      });
+    }
+
+    async function triggerOrderWebhook(type) {
+      if (!currentOrderData) return;
+      const timestamp = new Date().toISOString();
+      
+      if (type === 'shipped') {
+        const event = {
+          id: "evt_ship_884",
+          occurred_at: timestamp,
+          type: "shipped",
+          tracking_number: "1Z999AA10123456784",
+          tracking_url: "https://ups.com/track/1Z999AA10123456784",
+          description: "Package departed local shipping carrier hub."
+        };
+        currentOrderData.fulfillment.events.push(event);
+        currentOrderData.status = "shipped";
+        
+        logToTerminal('REST IN', 'Webhook: dev.ucp.shopping.order.shipped', event);
+        document.getElementById('order-code-body').innerHTML = highlightJson(event);
+      } else if (type === 'delivered') {
+        const event = {
+          id: "evt_del_441",
+          occurred_at: timestamp,
+          type: "delivered",
+          description: "Delivered securely: Front Door porch location verified."
+        };
+        currentOrderData.fulfillment.events.push(event);
+        currentOrderData.status = "delivered";
+
+        logToTerminal('REST IN', 'Webhook: dev.ucp.shopping.order.delivered', event);
+        document.getElementById('order-code-body').innerHTML = highlightJson(event);
+      } else if (type === 'refunded') {
+        const refundAmt = -currentOrderData.line_items[0].price;
+        const adjustment = {
+          id: "adj_ref_21",
+          type: "refund",
+          occurred_at: timestamp,
+          status: "completed",
+          line_items: [{ id: currentOrderData.line_items[0].item_id, quantity: -1 }],
+          totals: [{ type: "total", amount: refundAmt }],
+          description: "Customer requested returns. Vault processing completed."
+        };
+        currentOrderData.adjustments.push(adjustment);
+        currentOrderData.status = "refunded/returned";
+
+        logToTerminal('REST IN', 'Webhook: dev.ucp.shopping.order.refunded', adjustment);
+        document.getElementById('order-code-body').innerHTML = highlightJson(adjustment);
+      }
+
+      renderOrderTimeline();
+    }
+
+    // SECTION 8: PAYMENT HANDLERS PLAYGROUND
+    function resolveInstrumentsDemo() {
+      const bizInst = ["VISA", "MASTERCARD", "AMEX", "DISCOVER"];
+      const platInst = ["VISA", "MASTERCARD", "JCB"];
+      const resolved = bizInst.filter(i => platInst.includes(i));
+      
+      const payload = {
+        business_supported_networks: bizInst,
+        platform_supported_networks: platInst,
+        intersection_resolved: resolved,
+        authoritative_outcome: {
+          accepted_instruments: resolved,
+          notes: "Only mutual credit network formats are enabled during checkout steps."
+        }
+      };
+
+      logToTerminal('SYSTEM', 'Resolved Available Card Instruments', payload);
+      document.getElementById('payment-code-body').innerHTML = highlightJson(payload);
+    }
+
+    function runPaymentScenario(type) {
+      if (type === 'gpay') {
+        const spec = {
+          api_version: "2.0",
+          payment_method: {
+            type: "CARD",
+            parameters: {
+              allowed_card_networks: ["VISA", "MASTERCARD", "AMEX"]
+            }
+          },
+          tokenization_result: {
+            token: "gpay_token_abc123",
+            type: "PAYMENT_GATEWAY",
+            signature: "MEQCID1vXfP4..."
+          }
+        };
+        logToTerminal('SYSTEM', 'Executed Google Pay Tokenization Handshake', spec);
+        document.getElementById('payment-code-body').innerHTML = highlightJson(spec);
+      } else if (type === 'direct') {
+        const spec = {
+          tokenization_endpoint: "https://api.novamart.example.com/ucp/tokenize",
+          request: {
+            card_number: "•••• •••• •••• 9941",
+            expiry: "12/28",
+            cvc: "•••"
+          },
+          response: {
+            token: "tok_visa_123",
+            requires_3ds: true,
+            escalation_challenge: {
+              url: "https://bank.example.com/3ds/challenge/abc",
+              payload: { transaction_id: "tx_1234" }
+            }
+          }
+        };
+        logToTerminal('SYSTEM', 'Executed Direct Tokenization specs + 3DS escalation setup', spec);
+        document.getElementById('payment-code-body').innerHTML = highlightJson(spec);
+      } else if (type === 'ap2') {
+        const ap2Spec = {
+          mandate_type: "ap2_mandate",
+          jwt_claims: {
+            iss: "https://agent.shopbridge.example.com",
+            sub: "usr_88241",
+            aud: "https://api.novamart.example.com",
+            exp: Math.round(Date.now() / 1000) + 3600,
+            mandate: {
+              max_amount_cents: 50000,
+              valid_until: "2026-06-30T23:59:59Z",
+              allowed_capabilities: ["checkout", "cart"]
+            }
+          },
+          signature: "eyAiYWxnIjogIkVTMjU2IiwgImtpZCI6ICJzaG9wYnJpZGdlXzIwMjYiIH0.eyBpc3MiOiAiaHR0cHM6Ly9hZ2VudC5zaG9wYnJpZGdlLmV4YW1wbGUuY29tIiwgInN1YiI6ICJ1c3JfODgyNDEiLCAiYXVkIjogImh0dHBzOi8vYXBpLm5vdmFtYXJ0LmV4YW1wbGUuY29tIiwgImV4cCI6IDE3ODA5ODg4MDAsICJtYW5kYXRlIjogeyAibWF4X2Ftb3VudF9jZW50cyI6IDUwMDAwLCAidmFsaWRfdW50aWwiOiAiMjAyNi0wNi0zMFQyMzo1OTo1OVoiLCAiYWxsb3dlZF9jYXBhYmlsaXRpZXMiOiBbICJjaGVja291dCIsICJjYXJ0IiBdIH0gfQ.MEQCID1vXfP4M..."
+        };
+        logToTerminal('SYSTEM', 'Synthesized AP2 Mandate JWT token structure for autonomous agent transaction', ap2Spec);
+        document.getElementById('payment-code-body').innerHTML = highlightJson(ap2Spec);
+      }
+    }
+
+    // SECTION 9: MULTI-TRANSPORT MAPPINGS
+    const transportData = {
+      rest: {
+        title: "REST Transport Specification",
+        body: `POST /checkout-sessions HTTP/1.1
+Host: api.novamart.example.com
+UCP-Version: 2026-04-08
+UCP-Agent: profile="https://agent.shopbridge.example.com/ucp-profile.json"
+Content-Type: application/json
+Signature-Input: ucp-sig=("@method" "@target-uri" "ucp-agent");keyid="shopbridge_2026";alg="ES256"
+Signature: ucp-sig=:MEQCID1vXfP4...:
+
+{
+  "line_items": [
+    { "item_id": "prod_1", "quantity": 1 }
+  ],
+  "buyer": { "email": "agent.user@example.com" }
+}
+
+---------------------------------------------------
+HTTP/1.1 201 Created
+Content-Type: application/json
+
+{
+  "id": "chk_99218",
+  "status": "incomplete",
+  "currency": "USD",
+  "buyer": { "email": "agent.user@example.com" },
+  "totals": [
+    { "type": "subtotal", "amount": 14900 }
+  ]
+}`
+      },
+      mcp: {
+        title: "MCP JSON-RPC Tool call Transport",
+        body: `{
+  "jsonrpc": "2.0",
+  "method": "tools/call",
+  "params": {
+    "name": "create_checkout",
+    "arguments": {
+      "meta": {
+        "ucp-agent": { "profile": "https://agent.shopbridge.example.com/ucp-profile.json" }
+      },
+      "checkout": {
+        "line_items": [
+          { "item_id": "prod_1", "quantity": 1 }
+        ]
+      }
+    }
+  },
+  "id": 1
+}
+
+---------------------------------------------------
+Response (Success RPC):
+{
+  "jsonrpc": "2.0",
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\\n  \\"id\\": \\"chk_99218\\",\\n  \\"status\\": \\"incomplete\\",\\n  \\"currency\\": \\"USD\\"\\n}"
+      }
+    ]
+  },
+  "id": 1
+}`
+      },
+      a2a: {
+        title: "A2A Agent Card Specification",
+        body: `GET /.well-known/agent-card.json HTTP/1.1
+Host: novamart.example.com
+
+---------------------------------------------------
+{
+  "agent_card": {
+    "name": "NovaMart Merchant Core",
+    "extensions": {
+      "dev.ucp.shopping": {
+        "capabilities": ["checkout", "cart"],
+        "endpoint": "https://a2a.novamart.example.com/ucp"
+      }
+    }
+  }
+}`
+      },
+      embedded: {
+        title: "Embedded Iframe postMessage Channel Spec",
+        body: `// Sent inside Iframe target
+window.parent.postMessage({
+  "jsonrpc": "2.0",
+  "method": "ucp.embedded.create_checkout",
+  "params": {
+    "checkout": {
+      "line_items": [{ "item_id": "prod_1", "quantity": 1 }]
+    }
+  }
+}, "https://checkout.novamart.example.com");
+
+---------------------------------------------------
+// Target Response handshake
+window.addEventListener("message", (event) => {
+  if (event.origin !== "https://checkout.novamart.example.com") return;
+  console.log("Returned Frame checkout session: ", event.data.result);
+});`
+      }
+    };
+
+    function switchTransportTab(btnEl, type) {
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      btnEl.classList.add('active');
+      
+      const details = transportData[type];
+      document.getElementById('transport-spec-header').innerHTML = `<i class="fa-solid fa-code"></i> ${details.title}`;
+      document.getElementById('transport-code-body').innerText = details.body;
+      
+      logToTerminal('SYSTEM', `Switched transport mapping view to: ${type.toUpperCase()}`);
+    }
+
+    // SECTION 10: ERROR HANDLERS
+    const errorsDatabase = {
+      invalid_profile_url: {
+        status: 400,
+        payload: {
+          error: {
+            code: "invalid_profile_url",
+            message: "UCP profile URL endpoint format is malformed or invalid.",
+            details: [{ parameter: "profile", issue: "Must resolve to absolute secure URL address" }]
+          }
+        },
+        explain: "The Merchant endpoint returned HTTP 400 because the Agent profile URL passed inside request headers fails pattern validations."
+      },
+      profile_unreachable: {
+        status: 424,
+        payload: {
+          error: {
+            code: "profile_unreachable",
+            message: "Merchant failed to download agent profile from advertised URL.",
+            continue_url: "https://novamart.example.com/checkout/fallback/94118"
+          }
+        },
+        explain: "Network DNS timeouts preventing remote connection. UCP forces continue_url fallback redirection to avoid breaking user journey."
+      },
+      profile_malformed: {
+        status: 422,
+        payload: {
+          error: {
+            code: "profile_malformed",
+            message: "Profile schema validation failures. Missing required keys.",
+            details: [{ key: "ucp.signing_keys", issue: "Must contain valid public key certificates" }]
+          }
+        },
+        explain: "UCP configuration parsed correctly but failed core JSON schemas validations."
+      },
+      version_unsupported: {
+        status: 422,
+        payload: {
+          error: {
+            code: "version_unsupported",
+            message: "Merchant does not support requested protocol version format.",
+            supported_versions: ["2026-04-08", "2026-01-23"]
+          }
+        },
+        explain: "Mismatch in protocol date versions. Handshake failed."
+      },
+      capabilities_incompatible: {
+        status: 200,
+        payload: {
+          ucp: {
+            status: "error",
+            error_code: "capabilities_incompatible",
+            continue_url: "https://novamart.example.com/webcheckout"
+          }
+        },
+        explain: "Intersection algorithm yielded zero overlapping capability sets. Highlighting the continue_url exit pathway."
+      },
+      signature_missing: {
+        status: 401,
+        payload: {
+          error: {
+            code: "signature_missing",
+            message: "Authorization signatures required for UCP requests under RFC 9421 rules."
+          }
+        },
+        explain: "Verification failed. Authorization headers were absent or incomplete."
+      },
+      rate_limit: {
+        status: 429,
+        payload: {
+          error: {
+            code: "rate_limit_exceeded",
+            message: "Maximum API transaction frequency limits breached. Retry scheduled."
+          }
+        },
+        explain: "API throttling active. UCP enforces standard Retry-After headers (Retry-After: 60)."
+      },
+      server_error: {
+        status: 500,
+        payload: {
+          error: {
+            code: "internal_server_fault",
+            message: "An unexpected fatal system breakdown occurred."
+          }
+        },
+        explain: "Standard 500 error mapping rules."
+      }
+    };
+
+    function triggerSandboxError(type) {
+      const err = errorsDatabase[type];
+      if (!err) return;
+
+      logToTerminal('REST OUT', `Simulated Request yielding ${type}`);
+      logToTerminal('ERROR', `HTTP ${err.status} Response Payload`, err.payload);
+      
+      document.getElementById('error-code-body').innerHTML = `
+<strong>HTTP Status Code:</strong> ${err.status}
+<strong>Developer guide explanation:</strong>
+${err.explain}
+
+<strong>JSON Response Body:</strong>
+${highlightJson(err.payload)}
+      `;
+    }
+
+    async function simulateContinueFallback() {
+      logToTerminal('REST OUT', 'POST /checkout-sessions (capabilities_incompatible response expected)');
+      await sleep(300);
+      
+      const payload = {
+        ucp: { status: "error", error_code: "capabilities_incompatible" },
+        continue_url: "https://novamart.example.com/checkout/fallback/err_chk_9"
+      };
+
+      logToTerminal('ERROR', 'HTTP 200 with continue_url redirect fallback', payload);
+      alert(`Agent continue_url Fallback Executed!\n\nAgent gracefully redirects user to: ${payload.continue_url}`);
+    }
+
+    // SECTION 11: SIGNALS & SECURITY
+    function updateRiskScoreText(val) {
+      document.getElementById('sig-risk-text').innerText = val;
+    }
+
+    function generateSecuritySignals() {
+      const ip = document.getElementById('sig-buyer-ip').value;
+      const risk = parseFloat(document.getElementById('sig-risk-text').innerText);
+      
+      const signals = {
+        "dev.ucp.buyer_ip": ip,
+        "dev.ucp.user_agent": navigator.userAgent,
+        "com.shopbridge.risk_score": risk,
+        "dev.ucp.attestation": {
+          provider_jwks: "https://attestation.shopbridge.example.com/jwks",
+          kid: "sb_attest_2026",
+          payload: {
+            device_integrity: "passed",
+            app_signature_valid: true,
+            risk_classification: risk > 0.5 ? "elevated" : "low"
+          },
+          sig: "eyJhbGciOiJFUzI1NiIsImtpZCI6InNiX2F0dGVzdF8yMDI2In0.eyAgImRldmljZV9pbnRlZ3JpdHkiOiAicGFzc2VkIiwgICJhcHBfc2lnbmF0dXJlX3ZhbGlkIjogdHJ1ZSwgICJyaXNrX2NsYXNzaWZpY2F0aW9uIjogImxvdyIgfQ.MEQCID1vXfP4M..."
+        }
+      };
+
+      logToTerminal('SYSTEM', 'Generated UCP Signals package.', signals);
+      document.getElementById('sig-code-body').innerHTML = highlightJson(signals);
+    }
+
+    // SECTION 12: VERSIONING
+    async function selectVersionDemo(ver) {
+      logToTerminal('SYSTEM', `Testing handshakes with Platform Version set to: ${ver}`);
+      await sleep(350);
+      
+      const clientProfile = JSON.parse(JSON.stringify(platformProfile));
+      clientProfile.ucp.version = ver;
+
+      // Run intersection check
+      let output = "";
+      if (ver === '2026-04-08') {
+        const result = negotiateCapabilities(businessProfile, clientProfile);
+        output = `<strong>Status: SUCCESS</strong>\nVersions matched latest spec YYYY-MM-DD. Handshake verified.\n\nActive capabilities:\n${highlightJson(result.activeCapabilities)}`;
+        logToTerminal('REST IN', 'Handshake verified. Access granted.');
+      } else if (ver === '2026-01-23') {
+        const result = negotiateCapabilities(businessProfile, clientProfile);
+        output = `<strong>Status: BACKWARD COMPATIBLE HANDSHAKE</strong>\nUsing version 2026-01-23. Negotiated legacy capabilities profiles.\n\nActive capabilities:\n${highlightJson(result.activeCapabilities)}`;
+        logToTerminal('REST IN', 'Backward-compatible handshake resolved on version 2026-01-23.');
+      } else {
+        const err = {
+          error: {
+            code: "version_unsupported",
+            message: "Requested version format is not supported by merchant.",
+            supported_versions: ["2026-04-08", "2026-01-23"]
+          }
+        };
+        output = `<strong>Status: FAILED (HTTP 422)</strong>\nVersion mismatch exception triggered.\n\nResponse:\n${highlightJson(err)}`;
+        logToTerminal('ERROR', 'Handshake failed: version_unsupported', err);
+      }
+
+      document.getElementById('version-code-body').innerHTML = output;
+    }
+
+    // GLOBAL AUTOMATED E2E DEMO SCRIPT
+    async function runCompleteDemoFlow() {
+      clearLogs();
+      logToTerminal('SYSTEM', '🚀 STARTING GLOBAL E2E DEMO AUTOMATION SCRIPT...');
+      await sleep(1000);
+
+      // Section 1 Discovery
+      switchTab(document.querySelector('.nav-list .nav-item:nth-child(2)'), 'profiles');
+      showProfile('business');
+      await sleep(1500);
+
+      // Section 2 Negotiation
+      switchTab(document.querySelector('.nav-list .nav-item:nth-child(3)'), 'negotiation');
+      executeNegotiationDemo();
+      await sleep(1500);
+
+      // Section 3 Catalog Search
+      switchTab(document.querySelector('.nav-list .nav-item:nth-child(4)'), 'catalog');
+      document.getElementById('cat-query').value = "Buds";
+      await searchCatalog();
+      await sleep(1500);
+
+      // Section 4 Cart updates & Promo code
+      switchTab(document.querySelector('.nav-list .nav-item:nth-child(5)'), 'cart');
+      await addToCart('prod_1');
+      await sleep(1200);
+      document.getElementById('promo-code').value = "SAVE10";
+      await applyPromo();
+      await sleep(1500);
+
+      // Section 5 Checkout & 3DS Challenge Flow
+      switchTab(document.querySelector('.nav-list .nav-item:nth-child(6)'), 'checkout');
+      await initiateCheckoutFlow();
+      await sleep(1500);
+      
+      // Step 2 Form completion
+      document.getElementById('chk-fname').value = "Alex";
+      document.getElementById('chk-lname').value = "Smith";
+      document.getElementById('chk-street').value = "500 Innovation Way";
+      document.getElementById('chk-city').value = "San Francisco";
+      document.getElementById('chk-state').value = "CA";
+      document.getElementById('chk-zip').value = "94107";
+      await submitFulfillmentDetails();
+      await sleep(1500);
+
+      // Step 3 Choose 3DS Card and execute
+      selectCheckoutPayment('test_3ds');
+      await sleep(1000);
+      await completeCheckoutTransaction();
+      await sleep(2000);
+
+      // Approve 3DS Challenge
+      document.getElementById('otp-input').value = "9941";
+      await approve3DSChallenge();
+      await sleep(2000);
+
+      // Section 6 Identity Linking
+      switchTab(document.querySelector('.nav-list .nav-item:nth-child(7)'), 'identity');
+      await triggerOAuthFlow();
+      await sleep(1500);
+
+      // Section 7 Webhook timeline events
+      switchTab(document.querySelector('.nav-list .nav-item:nth-child(8)'), 'orders');
+      await sleep(1000);
+      await triggerOrderWebhook('shipped');
+      await sleep(1500);
+      await triggerOrderWebhook('delivered');
+      await sleep(1500);
+      await triggerOrderWebhook('refunded');
+      await sleep(1500);
+
+      logToTerminal('SYSTEM', '✅ E2E COMPLIANCE WALKTHROUGH COMPLETED SUCCESSFULLY!');
+    }
+
+    // Initialize application state
+    window.onload = function() {
+      // Initialize profiles
+      showProfile('business');
+      
+      // Initialize catalog
+      searchCatalog(true);
+      
+      // Initialize cart
+      updateCartDisplay();
+      
+      // Set Transport tabs base REST representation
+      switchTransportTab(document.querySelector('.tab-bar .tab-btn:first-child'), 'rest');
+    }
+  </script>
+</body>
+</html>
