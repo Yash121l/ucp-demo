@@ -29,11 +29,11 @@ No build pipeline is required for local use.
 
 ### Option A: open directly
 1. Clone the repository.
-2. Open `/tmp/workspace/Yash121l/ucp-demo/index.html` in a browser.
+2. Open `index.html` in a browser.
 
 ### Option B: run a simple local server
 ```bash
-cd /tmp/workspace/Yash121l/ucp-demo
+cd <repository-root>
 python3 -m http.server 8000
 ```
 
