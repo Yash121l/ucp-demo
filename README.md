@@ -205,7 +205,15 @@ In practical integrations, these protocol choices affect:
 
 ---
 
-## 8) Contributing
+## 8) Analytics
+
+The live site loads PostHog (US cloud) from a snippet in the `<head>` of `index.html`. Every event carries `app: "ucp-demo"`. PostHog does not initialise on `localhost`, `127.0.0.1`, or `file://`; add `?ph_debug=1` to the URL to turn it on locally with debug logging. Session replays mask all form inputs.
+
+Custom events: `section_viewed`, `demo_flow_run`, `catalog_search_run`, `cart_item_added`, `checkout_completed`, `identity_link_changed`, `error_simulated`, `version_tested`. Each has an `automated` property that is `true` when the event fired during "Run complete demo".
+
+---
+
+## 9) Contributing
 
 Contributions are welcome for:
 - improving section-level documentation,
