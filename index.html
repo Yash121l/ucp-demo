@@ -1113,6 +1113,40 @@
       }
     }
   </style>
+  <!-- PostHog analytics. The phc_ key is a public client key. -->
+  <script>
+    !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],Object.defineProperty(u,"toString",{configurable:!0,enumerable:!0,writable:!0,value:function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e}}),Object.defineProperty(u.people,"toString",{configurable:!0,enumerable:!0,writable:!0,value:function(){return u.toString(1)+".people (stub)"}}),o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagResult isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey getNextSurveyStep identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+    (function () {
+      var host = window.location.hostname;
+      var isLocal = window.location.protocol === 'file:' || host === 'localhost' || host === '127.0.0.1' || host === '';
+      var forceDev = /[?&]ph_debug=1\b/.test(window.location.search);
+      window.__phEnabled = !isLocal || forceDev;
+      if (!window.__phEnabled) return;
+      posthog.init('phc_oLm8fb7L4CXDqGdJcc7a6boCtR8rVjf6dNx7G995eGdy', {
+        api_host: 'https://us.i.posthog.com',
+        ui_host: 'https://us.posthog.com',
+        defaults: '2026-08-30',
+        capture_pageview: 'history_change',
+        capture_pageleave: true,
+        autocapture: true,
+        enable_heatmaps: true,
+        capture_dead_clicks: true,
+        capture_exceptions: true,
+        capture_performance: { web_vitals: true },
+        session_recording: { maskAllInputs: true },
+        loaded: function (ph) { if (forceDev) ph.debug(); }
+      });
+      posthog.register({ app: 'ucp-demo' });
+    })();
+
+    // Custom product events. No-op when PostHog is disabled (localhost).
+    window.__demoRunning = false;
+    function track(event, properties) {
+      if (!window.__phEnabled || !window.posthog) return;
+      var props = Object.assign({ automated: window.__demoRunning }, properties || {});
+      window.posthog.capture(event, props);
+    }
+  </script>
 </head>
 <body>
 
@@ -1951,6 +1985,7 @@
       document.querySelectorAll('.panel-section').forEach(el => el.classList.remove('active'));
       const activeSec = document.getElementById('sec-' + sectionId);
       if (activeSec) activeSec.classList.add('active');
+      track('section_viewed', { section: sectionId });
     }
 
     // SECTION 1: PROFILES DATA
@@ -2287,6 +2322,9 @@
       }
       
       renderCatalogGrid(filtered);
+      if (!silent) {
+        track('catalog_search_run', { query_length: q.length, has_query: q.length > 0, category: cat || 'all', results_count: filtered.length });
+      }
     }
 
     function renderCatalogGrid(items) {
@@ -2452,6 +2490,13 @@
       
       logToTerminal('REST IN', 'Cart successfully updated', responseObj);
       document.getElementById('cart-code-body').innerHTML = highlightJson(responseObj);
+      track('cart_item_added', {
+        product_id: product.id,
+        product_category: product.category,
+        price: product.price,
+        cart_line_items: activeCart.line_items.length,
+        cart_quantity: activeCart.line_items.reduce((n, i) => n + i.quantity, 0)
+      });
     }
 
     async function adjustCartQty(index, change) {
@@ -2907,6 +2952,13 @@
       };
 
       logToTerminal('REST IN', 'Checkout Session Success [State 3 - Completed]', successResponse);
+      track('checkout_completed', {
+        payment_handler: selectedPaymentHandler,
+        three_ds: selectedPaymentHandler === 'test_3ds',
+        line_items: activeCart.line_items.length,
+        subtotal: activeCart.totals ? activeCart.totals.subtotal : null,
+        discount: activeCart.totals ? activeCart.totals.discount : null
+      });
       document.getElementById('chk-endpoint-title').innerHTML = '<i class="fa-solid fa-circle-check" style="color:var(--color-success)"></i> Checkout Finalized';
       document.getElementById('checkout-code-body').innerHTML = highlightJson(successResponse);
 
@@ -3000,6 +3052,7 @@
         statusText.innerText = "Disconnected";
         indicator.style.backgroundColor = "var(--color-error)";
         document.getElementById('oauth-code-body').innerHTML = 'Account Connection Terminated.';
+        track('identity_link_changed', { action: 'revoked' });
       } else {
         // Connect flow
         const nonce = Math.random().toString(36).substring(7);
@@ -3038,8 +3091,10 @@
           btn.className = "btn btn-danger";
           statusText.innerText = "Connected & Active";
           indicator.style.backgroundColor = "var(--color-success)";
+          track('identity_link_changed', { action: 'connected' });
         } else {
           logToTerminal('ERROR', 'OAuth Consent Denied by Customer', { error: "access_denied" });
+          track('identity_link_changed', { action: 'denied' });
         }
       }
     }
@@ -3434,6 +3489,7 @@ window.addEventListener("message", (event) => {
       if (!err) return;
 
       logToTerminal('REST OUT', `Simulated Request yielding ${type}`);
+      track('error_simulated', { error_type: type, http_status: err.status });
       logToTerminal('ERROR', `HTTP ${err.status} Response Payload`, err.payload);
       
       document.getElementById('error-code-body').innerHTML = `
@@ -3519,10 +3575,30 @@ ${highlightJson(err.payload)}
       }
 
       document.getElementById('version-code-body').innerHTML = output;
+      track('version_tested', {
+        version: ver,
+        result: ver === '2026-04-08' ? 'success' : (ver === '2026-01-23' ? 'backward_compatible' : 'unsupported')
+      });
     }
 
     // GLOBAL AUTOMATED E2E DEMO SCRIPT
     async function runCompleteDemoFlow() {
+      if (window.__demoRunning) return;
+      const demoStartedAt = Date.now();
+      track('demo_flow_run', { status: 'started' });
+      window.__demoRunning = true;
+      try {
+        await runCompleteDemoSteps();
+        window.__demoRunning = false;
+        track('demo_flow_run', { status: 'completed', duration_ms: Date.now() - demoStartedAt });
+      } catch (e) {
+        window.__demoRunning = false;
+        track('demo_flow_run', { status: 'failed', duration_ms: Date.now() - demoStartedAt, error: String(e && e.message || e) });
+        throw e;
+      }
+    }
+
+    async function runCompleteDemoSteps() {
       clearLogs();
       logToTerminal('SYSTEM', '🚀 STARTING GLOBAL E2E DEMO AUTOMATION SCRIPT...');
       await sleep(1000);
